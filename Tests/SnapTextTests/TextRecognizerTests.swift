@@ -1,6 +1,6 @@
 import AppKit
 import Testing
-@testable import CopyText
+@testable import SnapText
 
 /// Draws into a bitmap at twice the point size, like a capture of a Retina display. The origin is at the top left.
 @MainActor

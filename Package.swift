@@ -2,16 +2,16 @@
 import PackageDescription
 
 let package = Package(
-    name: "CopyText",
+    name: "SnapText",
     platforms: [.macOS(.v13)],
     targets: [
         .executableTarget(
-            name: "CopyText",
+            name: "SnapText",
             swiftSettings: [.defaultIsolation(MainActor.self)]
         ),
         .testTarget(
-            name: "CopyTextTests",
-            dependencies: ["CopyText"]
+            name: "SnapTextTests",
+            dependencies: ["SnapText"]
         ),
     ]
 )

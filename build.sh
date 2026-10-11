@@ -1,5 +1,5 @@
 #!/bin/bash
-# Builds CopyText.app into ./build.
+# Builds SnapText.app into ./build.
 #
 #   ./build.sh            build the app
 #   ./build.sh install    build, copy to /Applications and open it
@@ -22,7 +22,7 @@ fi
 make_app() {
     rm -rf "$2"
     mkdir -p "$2/Contents/MacOS" "$2/Contents/Resources"
-    cp "$1" "$2/Contents/MacOS/CopyText"
+    cp "$1" "$2/Contents/MacOS/SnapText"
     cp Resources/Info.plist "$2/Contents/Info.plist"
     cp Resources/AppIcon.icns "$2/Contents/Resources/AppIcon.icns"
     codesign --force --sign "${SIGN_IDENTITY:--}" "$2"
@@ -41,25 +41,25 @@ package)
     # A copy to hand to other people: it runs on both kinds of Mac and comes with a note on opening it,
     # because macOS blocks apps that Apple has not notarized the first time they are opened.
     swift build -c release --arch arm64 --arch x86_64
-    folder=build/package/CopyText
-    rm -rf build/package build/CopyText.zip
+    folder=build/package/SnapText
+    rm -rf build/package build/SnapText.zip
     mkdir -p "$folder"
-    make_app "$(swift build -c release --arch arm64 --arch x86_64 --show-bin-path)/CopyText" "$folder/CopyText.app"
-    cp docs/install-note.txt "$folder/How to open CopyText.txt"
-    ditto -c -k --sequesterRsrc --keepParent "$folder" build/CopyText.zip
-    echo "Packaged build/CopyText.zip"
+    make_app "$(swift build -c release --arch arm64 --arch x86_64 --show-bin-path)/SnapText" "$folder/SnapText.app"
+    cp docs/install-note.txt "$folder/How to open SnapText.txt"
+    ditto -c -k --sequesterRsrc --keepParent "$folder" build/SnapText.zip
+    echo "Packaged build/SnapText.zip"
     ;;
 *)
     swift build -c release
-    make_app "$(swift build -c release --show-bin-path)/CopyText" build/CopyText.app
-    echo "Built build/CopyText.app"
+    make_app "$(swift build -c release --show-bin-path)/SnapText" build/SnapText.app
+    echo "Built build/SnapText.app"
 
     if [ "${1:-}" = install ]; then
-        pkill -x CopyText || true
-        rm -rf /Applications/CopyText.app
-        ditto build/CopyText.app /Applications/CopyText.app
-        open /Applications/CopyText.app
-        echo "Installed and opened /Applications/CopyText.app"
+        pkill -x SnapText || true
+        rm -rf /Applications/SnapText.app
+        ditto build/SnapText.app /Applications/SnapText.app
+        open /Applications/SnapText.app
+        echo "Installed and opened /Applications/SnapText.app"
     fi
     ;;
 esac

@@ -13,7 +13,7 @@ enum ScreenCapture {
 
     /// Lets the user drag over part of the screen. Returns nil if they press Escape.
     static func captureSelection() async throws -> CGImage? {
-        let file = FileManager.default.temporaryDirectory.appendingPathComponent("CopyText-\(UUID().uuidString).png")
+        let file = FileManager.default.temporaryDirectory.appendingPathComponent("SnapText-\(UUID().uuidString).png")
         defer { try? FileManager.default.removeItem(at: file) }
 
         // -i: interactive selection, -x: no shutter sound, -o: no window shadow when a whole window is picked.

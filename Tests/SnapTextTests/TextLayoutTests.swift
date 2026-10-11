@@ -1,6 +1,6 @@
 import CoreGraphics
 import Testing
-@testable import CopyText
+@testable import SnapText
 
 /// A fragment on a grid: `row` counts down from the top, `column` positions it left to right.
 private func fragment(_ text: String, row: Int, column: Int = 0) -> TextFragment {

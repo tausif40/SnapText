@@ -1,7 +1,7 @@
 import AppKit
 import Carbon.HIToolbox
 import Testing
-@testable import CopyText
+@testable import SnapText
 
 @MainActor
 private func keyDown(_ keyCode: Int, _ modifiers: NSEvent.ModifierFlags, characters: String) -> NSEvent {

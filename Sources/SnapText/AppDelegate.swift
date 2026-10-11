@@ -23,8 +23,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-        item.button?.image = NSImage(systemSymbolName: "text.viewfinder", accessibilityDescription: "CopyText")
-        item.button?.toolTip = "CopyText"
+        item.button?.image = NSImage(systemSymbolName: "text.viewfinder", accessibilityDescription: "SnapText")
+        item.button?.toolTip = "SnapText"
         item.menu = makeMenu()
         statusItem = item
 
@@ -32,7 +32,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         TextRecognizer.warmUp()
         showWelcomeIfNeeded()
         // Nothing works without Screen Recording permission, so ask on every launch that lacks it. macOS only
-        // shows its prompt until the user has answered once; after that this keeps CopyText in its list.
+        // shows its prompt until the user has answered once; after that this keeps SnapText in its list.
         if !ScreenCapture.hasPermission {
             ScreenCapture.requestPermission()
         }
@@ -89,11 +89,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func askForScreenRecordingPermission() {
         let pane = if #available(macOS 15, *) { "Screen & System Audio Recording" } else { "Screen Recording" }
         let alert = NSAlert()
-        alert.messageText = "CopyText needs Screen Recording permission"
+        alert.messageText = "SnapText needs Screen Recording permission"
         alert.informativeText = """
-            Turn on CopyText in System Settings → Privacy & Security → \(pane), then try again.
+            Turn on SnapText in System Settings → Privacy & Security → \(pane), then try again.
 
-            If it is already on, quit CopyText and open it again.
+            If it is already on, quit SnapText and open it again.
             """
         alert.addButton(withTitle: "Open System Settings")
         alert.addButton(withTitle: "Cancel")
@@ -110,17 +110,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         Preferences.hasShownWelcome = true
 
         let alert = NSAlert()
-        alert.messageText = "CopyText is ready"
+        alert.messageText = "SnapText is ready"
         alert.informativeText = """
             Press \(Preferences.shortcut.title) and drag over any text on screen. The text is copied to the clipboard.
 
-            CopyText lives in the menu bar, where you can change the shortcut.
+            SnapText lives in the menu bar, where you can change the shortcut.
             """
         if !ScreenCapture.hasPermission {
             alert.informativeText += """
 
 
-                macOS will now ask for Screen Recording permission, which CopyText needs to see the text you select.
+                macOS will now ask for Screen Recording permission, which SnapText needs to see the text you select.
                 """
         }
 
@@ -142,7 +142,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         ] {
             menu.addItem(item)
         }
-        menu.addItem(withTitle: "Quit CopyText", action: #selector(NSApplication.terminate), keyEquivalent: "q")
+        menu.addItem(withTitle: "Quit SnapText", action: #selector(NSApplication.terminate), keyEquivalent: "q")
         return menu
     }
 
@@ -183,7 +183,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             listen(for: previous)
             let alert = NSAlert()
             alert.messageText = "\(chosen.title) can’t be used as a shortcut"
-            alert.informativeText = "macOS did not accept it. CopyText still uses \(previous.title)."
+            alert.informativeText = "macOS did not accept it. SnapText still uses \(previous.title)."
             alert.runModal()
         }
     }

@@ -67,7 +67,7 @@ nonisolated enum TextRecognizer {
         context.fill(CGRect(origin: .zero, size: size))
         let font = CTFontCreateWithName("Helvetica" as CFString, 40, nil)
         let text = NSAttributedString(
-            string: "CopyText 123", attributes: [NSAttributedString.Key(kCTFontAttributeName as String): font])
+            string: "SnapText 123", attributes: [NSAttributedString.Key(kCTFontAttributeName as String): font])
         context.textPosition = CGPoint(x: 30, y: 35)
         CTLineDraw(CTLineCreateWithAttributedString(text), context)
         return context.makeImage()
