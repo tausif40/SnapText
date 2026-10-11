@@ -1,0 +1,48 @@
+CopyText
+Copy text from anywhere on your Mac's screen.
+Needs macOS 13 or later.
+
+
+HOW TO INSTALL
+
+1. Drag CopyText into your Applications folder.
+
+2. Open CopyText. The first time, macOS refuses to open it and says it
+   could not verify the app. That is expected: CopyText is free, and its
+   developer has not paid Apple to check it. To open it anyway:
+
+     macOS 15 or later
+       - Click Done on the warning.
+       - Open System Settings > Privacy & Security and scroll down.
+       - Next to the line about CopyText, click Open Anyway, then confirm
+         with your password or Touch ID.
+
+     macOS 13 or 14
+       - Hold Control and click CopyText, choose Open, then click Open.
+
+   You only do this once.
+
+3. CopyText asks to record the screen, which it needs in order to read
+   the text you select. Click Open System Settings, switch CopyText on,
+   and choose Quit & Reopen.
+
+
+HOW TO USE IT
+
+Press Option-X, drag over any text on the screen, and paste it anywhere
+with Command-V.
+
+CopyText sits in the menu bar at the top of the screen. Click its icon to
+change the shortcut, to start it automatically at login, or to quit.
+
+
+IF MACOS SAYS COPYTEXT "IS DAMAGED"
+
+Open the Terminal app, paste this line, press Return, and open CopyText
+again:
+
+    xattr -dr com.apple.quarantine /Applications/CopyText.app
+
+
+Only open apps from people you trust. CopyText does all its work on your
+Mac and never connects to the internet.

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="100 100 824 824" width="1024" height="1024" role="img" aria-labelledby="title">
+  <title id="title">CopyText app icon</title>
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5C9EFF"/>
+      <stop offset="1" stop-color="#294DE0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- The rounded tile, filling the image edge to edge -->
+  <rect x="100" y="100" width="824" height="824" rx="186" fill="url(#tile)"/>
+
+  <!-- Viewfinder corners -->
+  <g fill="none" stroke="#FFFFFF" stroke-width="44" stroke-linecap="round">
+    <path d="M262 382V318A56 56 0 0 1 318 262H382"/>
+    <path d="M642 262H706A56 56 0 0 1 762 318V382"/>
+    <path d="M762 642V706A56 56 0 0 1 706 762H642"/>
+    <path d="M382 762H318A56 56 0 0 1 262 706V642"/>
+  </g>
+
+  <!-- Three list rows, each a dot and a line -->
+  <g fill="#FFFFFF">
+    <circle cx="380" cy="412" r="24"/><rect x="436" y="388" width="232" height="48" rx="24"/>
+    <circle cx="380" cy="512" r="24"/><rect x="436" y="488" width="232" height="48" rx="24"/>
+    <circle cx="380" cy="612" r="24"/><rect x="436" y="588" width="152" height="48" rx="24"/>
+  </g>
+</svg>
