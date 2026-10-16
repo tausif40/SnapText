@@ -93,8 +93,8 @@ The script builds SnapText, copies it to `/Applications` and opens it. It takes 
 1. Press <kbd>⌥ Option</kbd> + <kbd>X</kbd>, or choose **Capture Text** from the SnapText icon in the menu bar.
    The pointer turns into a crosshair.
 2. Drag over the text. Press <kbd>Space</kbd> to pick a whole window instead, or <kbd>Esc</kbd> to cancel.
-3. Paste it anywhere with <kbd>⌘ Command</kbd> + <kbd>V</kbd>. A copy that happens at once shows nothing; a
-   small notice appears only when reading took a moment, when no text was found, or when something went wrong.
+3. Paste it anywhere with <kbd>⌘ Command</kbd> + <kbd>V</kbd>. A small notice confirms each copy, and also
+   appears when no text was found or when something went wrong.
 
 ### The menu
 
@@ -102,6 +102,7 @@ The script builds SnapText, copies it to `/Applications` and opens it. It takes 
 | --- | --- |
 | **Capture Text** | Starts a capture, the same as pressing the shortcut. |
 | **Keep Line Breaks** | On: the text keeps the lines it has on screen. Off: everything is joined into one line, which suits a sentence that wraps. |
+| **Show Copied Notice** | On: every copy is confirmed with a notice. Off: a copy that happens at once shows nothing, and only one that took a moment is confirmed. Notices for missing text and errors appear either way. |
 | **Change Shortcut…** | Press the key combination you want, then **Save**. It must include <kbd>⌘</kbd>, <kbd>⌃</kbd> or <kbd>⌥</kbd>, unless it is a function key. |
 | **Launch at Login** | Starts SnapText whenever you log in. |
 | **Buy Me a Coffee** | Opens the [support page](https://tausif.info/OCRpay) in your browser. |
@@ -250,7 +251,7 @@ flowchart LR
 | `Sources/SnapText/TextLayout.swift` | Turns recognized fragments into lines, and tables into rows |
 | `Sources/SnapText/GlobalHotKey.swift`, `Shortcut.swift` | The system-wide shortcut |
 | `Sources/SnapText/ShortcutRecorder.swift` | The dialog that records a new shortcut |
-| `Sources/SnapText/HUD.swift` | The notice shown for slow captures, missing text and errors |
+| `Sources/SnapText/HUD.swift` | The notice shown for copies, slow captures, missing text and errors |
 | `Sources/SnapText/Preferences.swift` | Settings that persist between launches |
 | `Tests/SnapTextTests/` | Tests for layout, shortcuts and recognition |
 | `Resources/` | `Info.plist` and the app icon |

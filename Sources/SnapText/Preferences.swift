@@ -10,6 +10,12 @@ enum Preferences {
         set { defaults.set(newValue, forKey: "keepLineBreaks") }
     }
 
+    /// Whether every copy is confirmed with a notice. Off, only a copy that kept the user waiting is.
+    static var showCopiedNotice: Bool {
+        get { defaults.object(forKey: "showCopiedNotice") as? Bool ?? true }
+        set { defaults.set(newValue, forKey: "showCopiedNotice") }
+    }
+
     static var shortcut: Shortcut {
         get { Shortcut(propertyList: defaults.object(forKey: "shortcut")) ?? .default }
         set { defaults.set(newValue.propertyList, forKey: "shortcut") }

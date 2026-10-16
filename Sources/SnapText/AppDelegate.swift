@@ -10,8 +10,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private let captureItem = NSMenuItem(title: "Capture Text", action: #selector(captureText), keyEquivalent: "")
     private let lineBreaksItem = NSMenuItem(
         title: "Keep Line Breaks", action: #selector(toggleLineBreaks), keyEquivalent: "")
+    private let copiedNoticeItem = NSMenuItem(
+        title: "Show Copied Notice", action: #selector(toggleCopiedNotice), keyEquivalent: "")
     private let shortcutItem = NSMenuItem(
-        title: "Change Shortcut…", action: #selector(changeShortcut), keyEquivalent: "")
+        title: "Change Shortcut", action: #selector(changeShortcut), keyEquivalent: "")
     private let launchAtLoginItem = NSMenuItem(
         title: "Launch at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
     private let coffeeItem = NSMenuItem(title: "Buy Me a Coffee", action: #selector(buyMeACoffee), keyEquivalent: "")
@@ -76,8 +78,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 }
                 NSPasteboard.general.clearContents()
                 NSPasteboard.general.setString(text, forType: .string)
-                // An instant copy needs no notice. One that kept the user waiting is confirmed.
-                if hud.isShowingProgress {
+                // Confirm the copy if the user asked for that. One that kept them waiting is confirmed regardless,
+                // since its "Reading text…" notice is still on screen.
+                if Preferences.showCopiedNotice || hud.isShowingProgress {
                     hud.show(.copied(text))
                 }
             } catch {
@@ -133,11 +136,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func makeMenu() -> NSMenu {
         let menu = NSMenu()
         menu.delegate = self
-        for item in [captureItem, lineBreaksItem, shortcutItem, launchAtLoginItem, coffeeItem] {
+        for item in [captureItem, lineBreaksItem, copiedNoticeItem, shortcutItem, launchAtLoginItem, coffeeItem] {
             item.target = self
         }
         for item in [
-            captureItem, .separator(), lineBreaksItem, shortcutItem, launchAtLoginItem, .separator(),
+            captureItem, .separator(), lineBreaksItem, copiedNoticeItem, shortcutItem, launchAtLoginItem, .separator(),
             coffeeItem, .separator(),
         ] {
             menu.addItem(item)
@@ -151,11 +154,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         captureItem.keyEquivalent = shortcut.key
         captureItem.keyEquivalentModifierMask = shortcut.modifiers
         lineBreaksItem.state = Preferences.keepLineBreaks ? .on : .off
+        copiedNoticeItem.state = Preferences.showCopiedNotice ? .on : .off
         launchAtLoginItem.state = SMAppService.mainApp.status == .enabled ? .on : .off
     }
 
     @objc private func toggleLineBreaks() {
         Preferences.keepLineBreaks.toggle()
+    }
+
+    @objc private func toggleCopiedNotice() {
+        Preferences.showCopiedNotice.toggle()
     }
 
     // MARK: - Shortcut
