@@ -143,11 +143,12 @@ Earlier versions of macOS support fewer.
 
 <br>
 
-This happens after SnapText has been rebuilt. macOS ties the permission to the app's code signature, and
-`build.sh` signs with an ad hoc signature that changes with every build. macOS then shows SnapText as allowed
-but refuses it, and does not ask again.
+This happens after SnapText has been rebuilt or updated. macOS ties the permission to the app's code signature,
+and a build signed ad hoc gets a new signature every time. macOS then shows SnapText as allowed but refuses it,
+and does not ask again.
 
-Clear the old entry, then open SnapText and grant the permission once more:
+Clear the old entry, then open SnapText and grant the permission once more. In System Settings, select SnapText
+in the Screen Recording list and remove it with the **−** button, or run:
 
 ```sh
 tccutil reset ScreenCapture com.tausif.SnapText
@@ -257,7 +258,7 @@ flowchart LR
 | `Resources/` | `Info.plist` and the app icon |
 | `Scripts/make-icon.swift` | Regenerates `Resources/AppIcon.icns` |
 | `build.sh` | Builds, installs, packages and tests the app |
-| `docs/install-note.txt` | The note that goes into the zip, on how to open the app |
+| `docs/install-note.txt` | The note that goes into the zip and the disk image, on how to open the app |
 | `docs/images/` | The graphics in this README |
 
 ## Building and testing
@@ -268,25 +269,28 @@ SnapText is a Swift package. `build.sh` wraps `swift build` and assembles the `.
 ./build.sh            # builds build/SnapText.app
 ./build.sh install    # builds, copies it to /Applications and opens it
 ./build.sh package    # builds for Apple silicon and Intel, and zips it as build/SnapText.zip
+./build.sh dmg        # the same, but as a disk image at build/SnapText.dmg
 ./build.sh test       # runs the tests
 ```
 
 `package` makes the zip that goes on the Releases page: the app, plus `docs/install-note.txt` as a note on how
-to open it.
+to open it. `dmg` puts the same two files in a disk image, beside a link to Applications to drag the app onto.
 
 The recognition tests run Vision for real, so the first test run takes a little under a minute while macOS
 prepares its models. Later runs take under a second.
 
 ### Signing
 
-Screen Recording permission is tied to the app's code signature. By default `build.sh` signs ad hoc, and an ad
-hoc signature changes with every build, so each rebuild needs the permission granted again
-(see [Troubleshooting](#troubleshooting)).
+Screen Recording permission is tied to the app's code signature. When your keychain has an Apple Development
+certificate (Xcode creates one when you sign in with an Apple ID), `build.sh` signs with it, and the permission
+survives rebuilds. Without one it signs ad hoc, and an ad hoc signature changes with every build, so each
+rebuild needs the permission granted again (see [Troubleshooting](#troubleshooting)).
 
-If you have a signing certificate in your keychain, use it and the permission survives rebuilds:
+To sign with a different certificate, or to force an ad hoc signature:
 
 ```sh
-SIGN_IDENTITY="Apple Development" ./build.sh install
+SIGN_IDENTITY="Developer ID Application" ./build.sh install
+SIGN_IDENTITY=- ./build.sh install
 ```
 
 ### The icon

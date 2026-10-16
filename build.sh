@@ -4,11 +4,13 @@
 #   ./build.sh            build the app
 #   ./build.sh install    build, copy to /Applications and open it
 #   ./build.sh package    build for Apple silicon and Intel, and zip it for sharing
+#   ./build.sh dmg        build for Apple silicon and Intel, and put it in a disk image for sharing
 #   ./build.sh test       run the tests
 #
-# Screen Recording permission is tied to the app's signature. The default ad hoc signature changes with
-# every build, so the permission must be granted again after rebuilding. To keep it across builds, sign
-# with a certificate from your keychain: SIGN_IDENTITY="Apple Development" ./build.sh
+# Screen Recording permission is tied to the app's signature. An ad hoc signature changes with every build,
+# so the permission would have to be granted again after each rebuild. The app is therefore signed with the
+# Apple Development certificate from your keychain when there is one, which keeps the permission across
+# builds. Pick another certificate with SIGN_IDENTITY="…" ./build.sh, or force ad hoc with SIGN_IDENTITY=-
 
 set -euo pipefail
 cd "$(dirname "$0")"
@@ -18,6 +20,14 @@ if ! xcrun --find swift >/dev/null 2>&1 && [ -d /Library/Developer/CommandLineTo
     export DEVELOPER_DIR=/Library/Developer/CommandLineTools
 fi
 
+if [ -z "${SIGN_IDENTITY:-}" ]; then
+    if security find-identity -v -p codesigning 2>/dev/null | grep -q '"Apple Development'; then
+        SIGN_IDENTITY="Apple Development"
+    else
+        SIGN_IDENTITY=-
+    fi
+fi
+
 # Assembles and signs an app bundle at $2 around the executable at $1.
 make_app() {
     rm -rf "$2"
@@ -25,7 +35,7 @@ make_app() {
     cp "$1" "$2/Contents/MacOS/SnapText"
     cp Resources/Info.plist "$2/Contents/Info.plist"
     cp Resources/AppIcon.icns "$2/Contents/Resources/AppIcon.icns"
-    codesign --force --sign "${SIGN_IDENTITY:--}" "$2"
+    codesign --force --sign "$SIGN_IDENTITY" "$2"
 }
 
 case "${1:-}" in
@@ -37,17 +47,26 @@ test)
     fi
     exec swift test
     ;;
-package)
+package | dmg)
     # A copy to hand to other people: it runs on both kinds of Mac and comes with a note on opening it,
     # because macOS blocks apps that Apple has not notarized the first time they are opened.
     swift build -c release --arch arm64 --arch x86_64
     folder=build/package/SnapText
-    rm -rf build/package build/SnapText.zip
+    rm -rf build/package
     mkdir -p "$folder"
     make_app "$(swift build -c release --arch arm64 --arch x86_64 --show-bin-path)/SnapText" "$folder/SnapText.app"
     cp docs/install-note.txt "$folder/How to open SnapText.txt"
-    ditto -c -k --sequesterRsrc --keepParent "$folder" build/SnapText.zip
-    echo "Packaged build/SnapText.zip"
+
+    if [ "$1" = dmg ]; then
+        # The disk image opens to the app beside a link to Applications, so installing is a single drag.
+        ln -s /Applications "$folder/Applications"
+        hdiutil create -volname SnapText -srcfolder "$folder" -format UDZO -ov build/SnapText.dmg
+        echo "Packaged build/SnapText.dmg"
+    else
+        rm -f build/SnapText.zip
+        ditto -c -k --sequesterRsrc --keepParent "$folder" build/SnapText.zip
+        echo "Packaged build/SnapText.zip"
+    fi
     ;;
 *)
     swift build -c release

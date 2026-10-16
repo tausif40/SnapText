@@ -96,7 +96,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         alert.informativeText = """
             Turn on SnapText in System Settings → Privacy & Security → \(pane), then try again.
 
-            If it is already on, quit SnapText and open it again.
+            If it is already on, an older copy of SnapText is the one allowed. Select SnapText in that list, \
+            remove it with the − button, then quit SnapText and open it again.
             """
         alert.addButton(withTitle: "Open System Settings")
         alert.addButton(withTitle: "Cancel")
