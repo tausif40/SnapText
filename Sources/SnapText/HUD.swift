@@ -125,16 +125,16 @@ final class HUD {
         }
         // The text sets the height; the icon and the spinner share one spot beside it.
         NSLayoutConstraint.activate([
-            icon.leadingAnchor.constraint(equalTo: background.leadingAnchor, constant: 16),
+            icon.leadingAnchor.constraint(equalTo: background.leadingAnchor, constant: 12),
             icon.centerYAnchor.constraint(equalTo: background.centerYAnchor),
-            icon.widthAnchor.constraint(equalToConstant: 24),
-            icon.heightAnchor.constraint(equalToConstant: 24),
+            icon.widthAnchor.constraint(equalToConstant: 20),
+            icon.heightAnchor.constraint(equalToConstant: 20),
             spinner.centerXAnchor.constraint(equalTo: icon.centerXAnchor),
             spinner.centerYAnchor.constraint(equalTo: icon.centerYAnchor),
             text.leadingAnchor.constraint(equalTo: icon.trailingAnchor, constant: 10),
-            text.trailingAnchor.constraint(equalTo: background.trailingAnchor, constant: -18),
-            text.topAnchor.constraint(equalTo: background.topAnchor, constant: 12),
-            text.bottomAnchor.constraint(equalTo: background.bottomAnchor, constant: -12),
+            text.trailingAnchor.constraint(equalTo: background.trailingAnchor, constant: -14),
+            text.topAnchor.constraint(equalTo: background.topAnchor, constant: 8),
+            text.bottomAnchor.constraint(equalTo: background.bottomAnchor, constant: -8),
             detail.widthAnchor.constraint(lessThanOrEqualToConstant: 320),
         ])
         return background
