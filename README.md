@@ -1,20 +1,22 @@
 <h1 align="center">
-  <img src="docs/images/banner.svg" alt="SnapText" width="100%">
+  <img src="docs/images/banner.svg" alt="SnapText: press Option-X to copy text from anywhere on screen, and Option-V to search and paste your clipboard history" width="100%">
 </h1>
 
 <p align="center">
   <b>Copy text from anywhere on your Mac's screen</b> — images, videos, PDFs, error dialogs,<br>
-  anything you can see but cannot select.
+  anything you can see but cannot select. <b>Then find it again</b> in your clipboard history.
 </p>
 
 <p align="center">
   <img alt="Runs on macOS 13 or later" src="https://img.shields.io/badge/macOS-13%2B-1f6feb?logo=apple&logoColor=white">
   <img alt="Written in Swift 6.2" src="https://img.shields.io/badge/Swift-6.2-F05138?logo=swift&logoColor=white">
   <img alt="Text recognition runs on your Mac" src="https://img.shields.io/badge/OCR-on--device-2ea44f">
-  <img alt="MIT license" src="https://img.shields.io/badge/license-MIT-8250df">
+  <img alt="PolyForm Noncommercial license" src="https://img.shields.io/badge/license-PolyForm%20Noncommercial-8250df">
+  <img alt="Version 2.1" src="https://img.shields.io/badge/version-2.1-0969da">
 </p>
 
 <p align="center">
+  <a href="#whats-new-in-21">What's new</a> ·
   <a href="#install">Install</a> ·
   <a href="#using-snaptext">Using it</a> ·
   <a href="#troubleshooting">Troubleshooting</a> ·
@@ -39,8 +41,26 @@
   with the date and time of each and a search box to find one again. Click one to paste it where you are typing.
 - ⌨️ **Your shortcuts.** <kbd>⌥ Option</kbd> + <kbd>X</kbd> and <kbd>⌥ Option</kbd> + <kbd>V</kbd> to start with;
   record any combinations you prefer.
+- 🪟 **Everything in one window.** Open SnapText to see its shortcuts, the permissions it has, and every setting.
 - 🪶 **Small.** One icon in the menu bar, an app under 1 MB, about 2,500 lines of Swift you can read in an evening.
-- 💸 **Free and open source**, under the MIT license.
+- 💸 **Free for personal and noncommercial use**, with its source open to read, under the
+  [PolyForm Noncommercial License](#license).
+
+## What's new in 2.1
+
+- **Clipboard history.** SnapText remembers the text you copy in any app, not only the text it reads off the
+  screen. Press <kbd>⌥ Option</kbd> + <kbd>V</kbd> to see it, with the date and time of each copy.
+  - **Search** as you type, and move through the list with <kbd>↑</kbd> and <kbd>↓</kbd>.
+  - **Paste straight in.** Pick a copy while you are typing in a text field, and it is pasted there.
+  - **Copy button** on every row, which turns into a tick once the copy is on the clipboard.
+  - **Keep what you want:** the last 500 copies to start with, up to 1,000, or the copies from the last so many
+    days. It is saved on your Mac, so it survives a restart.
+  - **Move the window** anywhere on screen by dragging an empty part of it. It opens there next time.
+- **The SnapText window.** Opening SnapText shows a window with a **Home** tab, which lists both shortcuts and the
+  permissions SnapText has, and a **Settings** tab, which holds every setting.
+- **New settings,** in three groups: Clipboard History, Capture Text (OCR) and General. The same settings are also
+  behind the gear button in the history window.
+- **Both shortcuts can be changed** right in the settings: click one and press the new combination.
 
 ## Install
 
@@ -500,12 +520,24 @@ SnapText is free. If it saves you time, you can help cover the cost of keeping i
 
 ## License
 
-SnapText is released under the [MIT License](LICENSE).
+SnapText is released under the [PolyForm Noncommercial License 1.0.0](LICENSE).
+Copyright (c) 2026 Tausif.
+
+- **You may** use it, read and change its code, and share it, with or without your changes, for any
+  noncommercial purpose: personal use, study, hobby projects, and use by charities, schools, public research,
+  and government bodies.
+- **You may not** use it, or anything made from it, for a commercial purpose, such as selling it or building it
+  into a paid product, without the developer's permission.
+- **Whenever you share it,** include the [license](LICENSE), or its link, and the line
+  `Required Notice: Copyright (c) 2026 Tausif`.
+
+For commercial use, [email the developer](mailto:tausif6040@gmail.com). The [LICENSE](LICENSE) file is the full,
+binding text.
 
 ## Developer
 
 Made by **Mohd Tausif**.
 
-- Website: [tausif.info](https://tausif.info)
 - Email: [tausif6040@gmail.com](mailto:tausif6040@gmail.com)
+- Website: [tausif.info](https://tausif.info)
 - Bugs and feature requests: [open an issue](../../issues)
