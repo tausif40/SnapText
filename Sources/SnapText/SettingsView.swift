@@ -4,7 +4,7 @@ import AppKit
 /// clipboard history popup and the SnapText window each show one.
 final class SettingsView: NSView, NSTextFieldDelegate {
     private static let copiesRange = 1...ClipboardHistory.capacity
-    private static let daysRange = 1...365
+    private static let daysRange = 1...Preferences.maxHistoryDays
 
     /// Makes a shortcut do something. Returns why it cannot, or nil once it does.
     var onChangeShortcut: (Shortcut, GlobalHotKey.Purpose) -> String? = { _, _ in nil }

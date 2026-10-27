@@ -59,6 +59,8 @@ enum Preferences {
 
     static let defaultHistoryCopies = 500
     static let defaultHistoryDays = 30
+    /// The most days of copies the history keeps: one month.
+    static let maxHistoryDays = 30
 
     /// How many copies the history keeps when it is limited by their number.
     static var historyCopies: Int {
@@ -68,7 +70,8 @@ enum Preferences {
 
     /// How many days of copies the history keeps when it is limited by their age.
     static var historyDays: Int {
-        get { defaults.object(forKey: "historyDays") as? Int ?? defaultHistoryDays }
+        // Earlier versions allowed up to 365 days.
+        get { min(defaults.object(forKey: "historyDays") as? Int ?? defaultHistoryDays, maxHistoryDays) }
         set { defaults.set(newValue, forKey: "historyDays") }
     }
 

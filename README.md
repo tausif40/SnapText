@@ -3,8 +3,21 @@
 </h1>
 
 <p align="center">
-  <b>The complete guide to SnapText 2.1</b><br>
-  Everything it does, from the first launch to the last copy, in one place.
+  <b>The complete guide to SnapText 2.1</b>
+</p>
+
+<p align="center">
+  <b>Copy text from anywhere on your Mac's screen</b> - images, videos, PDFs, error dialogs,<br>
+  anything you can see but cannot select. 
+</p>
+<p align="center"><b>Clipboard History</b> - Keeps the text you copy in any app, so you can search it and paste it again later.</p>
+
+<p align="center">
+  <img alt="Runs on macOS 13 or later" src="https://img.shields.io/badge/macOS-13%2B-1f6feb?logo=apple&logoColor=white">
+  <img alt="Written in Swift 6.2" src="https://img.shields.io/badge/Swift-6.2-F05138?logo=swift&logoColor=white">
+  <img alt="Text recognition runs on your Mac" src="https://img.shields.io/badge/OCR-on--device-2ea44f">
+  <img alt="PolyForm Noncommercial license" src="https://img.shields.io/badge/license-PolyForm%20Noncommercial-8250df">
+  <img alt="Version 2.1" src="https://img.shields.io/badge/version-2.1-0969da">
 </p>
 
 <p align="center">
@@ -20,14 +33,27 @@
 > This guide explains how to use SnapText. To install it, build it, or read how it works inside, see the
 > main [README](README2.md).
 
+## 🆕 New in 2.1: Clipboard History
+
+SnapText now remembers the text you copy in any app, not only what it reads off the screen. Press
+<kbd>⌥ Option</kbd> + <kbd>V</kbd> to see your recent copies, search them, and click one to paste it where you
+are typing.
+
+- **Saved on your Mac,** so your copies are still there after a restart. [What is kept →](#4-what-is-kept-and-for-how-long)
+- **Up to 1,000 copies, or the last 30 days.** Keep the last 500 copies to start with, up to 1,000, or every
+  copy from the last month, up to 30 days. [Settings →](#6-every-setting)
+- **Passwords stay out,** for your security, unless you choose to save them. [Passwords →](#passwords-and-private-copies)
+
+[Read the full Clipboard History section →](#3-clipboard-history)
+
 ## 1. SnapText at a glance
 
 SnapText lives in your Mac's menu bar and does two things:
 
-| | Feature | Shortcut | What it does |
-| --- | --- | --- | --- |
-| 🎯 | **Capture Text (OCR)** | <kbd>⌥ Option</kbd> + <kbd>X</kbd> | Copies the text in anything you can see on screen, even text you cannot select. |
-| 📋 | **Clipboard History** | <kbd>⌥ Option</kbd> + <kbd>V</kbd> | Keeps the text you copy in any app, so you can search it and paste it again later. |
+|     | Feature                | Shortcut                           | What it does                                                                       |
+| --- | ---------------------- | ---------------------------------- | ---------------------------------------------------------------------------------- |
+| 🎯  | **Capture Text (OCR)** | <kbd>⌥ Option</kbd> + <kbd>X</kbd> | Copies the text in anything you can see on screen, even text you cannot select.    |
+| 📋  | **Clipboard History**  | <kbd>⌥ Option</kbd> + <kbd>V</kbd> | Keeps the text you copy in any app, so you can search it and paste it again later. |
 
 The two work together: text you capture goes straight into the history, next to everything else you copied.
 
@@ -39,7 +65,7 @@ Both shortcuts can be changed. See [Changing a shortcut](#changing-a-shortcut).
   <img src="docs/images/feature-ocr.svg" alt="Capture Text in four steps: press Option-X, drag over the text, SnapText reads it on your Mac, then paste it anywhere" width="100%">
 </p>
 
-OCR means *optical character recognition*: reading text from a picture of it. SnapText uses it to copy text that
+OCR means _optical character recognition_: reading text from a picture of it. SnapText uses it to copy text that
 your Mac shows but will not let you select, such as text in:
 
 - photos, screenshots and scanned documents
@@ -71,12 +97,12 @@ The text is also saved in your [clipboard history](#3-clipboard-history), so you
 
 ### The notices you may see
 
-| Notice | What it means |
-| --- | --- |
-| ✅ **Copied** | The text is on the clipboard. Turn this notice off with **Show copied notice**. |
-| ⏳ **Reading text…** | Recognition is taking a moment. This happens in the first half minute after installing, while macOS prepares its models, and once the first time it meets a new script such as Devanagari. |
-| 🔍 **No text found** | There was no text in the area you selected. Try a larger area, or zoom in first. |
-| ⚠️ **Couldn't read text** | Something went wrong. The notice says what. |
+| Notice                    | What it means                                                                                                                                                                              |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ✅ **Copied**             | The text is on the clipboard. Turn this notice off with **Show copied notice**.                                                                                                            |
+| ⏳ **Reading text…**      | Recognition is taking a moment. This happens in the first half minute after installing, while macOS prepares its models, and once the first time it meets a new script such as Devanagari. |
+| 🔍 **No text found**      | There was no text in the area you selected. Try a larger area, or zoom in first.                                                                                                           |
+| ⚠️ **Couldn't read text** | Something went wrong. The notice says what.                                                                                                                                                |
 
 ### Permission it needs
 
@@ -113,24 +139,24 @@ Press <kbd>⌥ Option</kbd> + <kbd>V</kbd> from any app. You can also choose **C
 icon, or click **Open** in the SnapText window.
 
 A small window shows your copies, newest first. Each row shows the start of the text and when you copied it,
-such as *Today at 9:41 AM* or *Yesterday at 6:12 PM*. Hold the pointer over a row to read more of it.
+such as _Today at 9:41 AM_ or _Yesterday at 6:12 PM_. Hold the pointer over a row to read more of it.
 
 The window does not take over: the app you were typing in stays in front, ready to paste into.
 
 ### Finding a copy
 
 - **Type to search.** The list narrows as you type. Searching ignores capitals and accents, so `cafe` finds
-  *Café*.
+  _Café_.
 - **Move with the arrow keys.** <kbd>↑</kbd> and <kbd>↓</kbd> move the blue selection, while you keep typing.
 - **Clear the search** with <kbd>Esc</kbd>. Press it again to close the window.
 
 ### Using a copy
 
-| You do this | What happens |
-| --- | --- |
+| You do this                                    | What happens                                                                                                                                                                        |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Click a copy**, or press <kbd>↩ Return</kbd> | If you were typing in a text field, the copy is **pasted straight into it**. If not, it goes on the clipboard, ready for <kbd>⌘</kbd> + <kbd>V</kbd>. The window closes either way. |
-| **Click the copy button** at the end of a row | The copy goes on the clipboard and the button turns into a green tick. The window stays open, so you can keep looking. |
-| **Right-click a copy** and choose **Delete** | That copy is removed from the history. |
+| **Click the copy button** at the end of a row  | The copy goes on the clipboard and the button turns into a green tick. The window stays open, so you can keep looking.                                                              |
+| **Right-click a copy** and choose **Delete**   | That copy is removed from the history.                                                                                                                                              |
 
 Pasting into another app needs **Accessibility** permission. macOS asks for it the first time you pick a copy.
 Without it, SnapText still puts the copy on the clipboard, and you paste it yourself.
@@ -163,13 +189,14 @@ restart, shut down, or update SnapText**. Copies leave the history only when:
 
 ### How much is kept
 
-| You choose | What is kept | Range | Starts at |
-| --- | --- | --- | --- |
-| **Number of copies** | The most recent copies. When a new one arrives, the oldest goes. | 1 to 1,000 | **500** |
-| **Number of days** | The copies made in the last so many days. Older ones are deleted. | 1 to 365 days | 30 |
+| You choose           | What is kept                                                      | Range         | Starts at |
+| -------------------- | ----------------------------------------------------------------- | ------------- | --------- |
+| **Number of copies** | The most recent copies. When a new one arrives, the oldest goes.  | 1 to 1,000    | **500**   |
+| **Number of days**   | The copies made in the last so many days. Older ones are deleted. | 1 to 30 days  | 30        |
 
 Whichever you choose, the history never holds more than **1,000 copies**. Typing a larger number shows a red
-note, *You can't save more than 1,000 copies*, and the limit stops at 1,000.
+note, _You can't save more than 1,000 copies_, and the limit stops at 1,000. In the same way, copies are kept
+for **30 days at most**. Typing more days shows _You can't keep more than 30 days_, and the limit stops at 30.
 
 Lowering the limit deletes the copies beyond it straight away. A **Use the Default** button appears whenever the
 limit is not the default, to set it back to 500 copies or 30 days.
@@ -248,17 +275,17 @@ bar. When SnapText starts at login, it starts quietly in the menu bar without th
 
 ### The menu bar icon
 
-| Menu item | What it does |
-| --- | --- |
-| **Capture Text** | Starts a capture. |
-| **Clipboard History** | Opens the history. |
-| **Keep Line Breaks** | Turns the setting of the same name on or off. |
-| **Show Copied Notice** | Turns the setting of the same name on or off. |
-| **Settings…** <kbd>⌘ ,</kbd> | Opens the Settings tab of the SnapText window. |
-| **Launch at Login** | Turns **Open SnapText at login** on or off. |
-| **Open SnapText** | Opens the SnapText window. |
-| **Buy Me a Coffee** | Opens the support page in your browser. |
-| **Quit SnapText** | Quits SnapText. Its shortcuts stop working, and copies are no longer saved. |
+| Menu item                    | What it does                                                                |
+| ---------------------------- | --------------------------------------------------------------------------- |
+| **Capture Text**             | Starts a capture.                                                           |
+| **Clipboard History**        | Opens the history.                                                          |
+| **Keep Line Breaks**         | Turns the setting of the same name on or off.                               |
+| **Show Copied Notice**       | Turns the setting of the same name on or off.                               |
+| **Settings…** <kbd>⌘ ,</kbd> | Opens the Settings tab of the SnapText window.                              |
+| **Launch at Login**          | Turns **Open SnapText at login** on or off.                                 |
+| **Open SnapText**            | Opens the SnapText window.                                                  |
+| **Buy Me a Coffee**          | Opens the support page in your browser.                                     |
+| **Quit SnapText**            | Quits SnapText. Its shortcuts stop working, and copies are no longer saved. |
 
 ### The history popup
 
@@ -272,30 +299,30 @@ popup. Changes take effect at once: there is nothing to save.
 
 ### Clipboard History
 
-| Setting | What it does | Starts as |
-| --- | --- | --- |
-| **Shortcut** | The keys that open the history. | <kbd>⌥</kbd> + <kbd>V</kbd> |
-| **Save history** | Off: new copies are not saved. | On |
-| **Paste into text fields** | On: picking a copy pastes it into the text field you were typing in. Off: it only goes on the clipboard. | On |
-| **Save passwords and private copies** | On: copies that password managers mark as private, such as passwords, are saved too, as plain text. Off for your security. See [Passwords and private copies](#passwords-and-private-copies). | Off |
-| **Limit by** | **Number of copies** or **Number of days**. | Number of copies |
-| **Keep the last** | How many copies, or how many days. | 500 copies |
-| **Popup opacity** | How solid the history popup's background is, from 30% to 100%. Lower it to see what is behind, blurred like frosted glass. | 100% |
-| **Clear History** | Shows how many copies are saved, and deletes them all. Click it twice to confirm. | |
+| Setting                               | What it does                                                                                                                                                                                  | Starts as                   |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| **Shortcut**                          | The keys that open the history.                                                                                                                                                               | <kbd>⌥</kbd> + <kbd>V</kbd> |
+| **Save history**                      | Off: new copies are not saved.                                                                                                                                                                | On                          |
+| **Paste into text fields**            | On: picking a copy pastes it into the text field you were typing in. Off: it only goes on the clipboard.                                                                                      | On                          |
+| **Save passwords and private copies** | On: copies that password managers mark as private, such as passwords, are saved too, as plain text. Off for your security. See [Passwords and private copies](#passwords-and-private-copies). | Off                         |
+| **Limit by**                          | **Number of copies** or **Number of days**.                                                                                                                                                   | Number of copies            |
+| **Keep the last**                     | How many copies, or how many days.                                                                                                                                                            | 500 copies                  |
+| **Popup opacity**                     | How solid the history popup's background is, from 30% to 100%. Lower it to see what is behind, blurred like frosted glass.                                                                    | 100%                        |
+| **Clear History**                     | Shows how many copies are saved, and deletes them all. Click it twice to confirm.                                                                                                             |                             |
 
 ### Capture Text (OCR)
 
-| Setting | What it does | Starts as |
-| --- | --- | --- |
-| **Shortcut** | The keys that start a capture. | <kbd>⌥</kbd> + <kbd>X</kbd> |
-| **Keep line breaks** | On: the text keeps the lines it has on screen. Off: it is joined into one line. | On |
-| **Show copied notice** | On: every copy is confirmed with a notice. Off: only a capture that took a moment is. | On |
+| Setting                | What it does                                                                          | Starts as                   |
+| ---------------------- | ------------------------------------------------------------------------------------- | --------------------------- |
+| **Shortcut**           | The keys that start a capture.                                                        | <kbd>⌥</kbd> + <kbd>X</kbd> |
+| **Keep line breaks**   | On: the text keeps the lines it has on screen. Off: it is joined into one line.       | On                          |
+| **Show copied notice** | On: every copy is confirmed with a notice. Off: only a capture that took a moment is. | On                          |
 
 ### General
 
-| Setting | What it does | Starts as |
-| --- | --- | --- |
-| **Open SnapText at login** | Starts SnapText in the menu bar whenever you log in, so captures and the history always work. | Off |
+| Setting                    | What it does                                                                                  | Starts as |
+| -------------------------- | --------------------------------------------------------------------------------------------- | --------- |
+| **Open SnapText at login** | Starts SnapText in the menu bar whenever you log in, so captures and the history always work. | Off       |
 
 ### Changing a shortcut
 
@@ -313,10 +340,10 @@ While SnapText runs, its shortcuts belong to it. With the defaults, <kbd>⌥</kb
 
 ## 7. Permissions
 
-| Permission | Needed for | Without it |
-| --- | --- | --- |
-| **Screen Recording** | Capture Text | Captures do not work. SnapText explains how to allow it. |
-| **Accessibility** | Pasting a copy from the history straight into a text field | Picking a copy only puts it on the clipboard. Everything else works. |
+| Permission           | Needed for                                                 | Without it                                                           |
+| -------------------- | ---------------------------------------------------------- | -------------------------------------------------------------------- |
+| **Screen Recording** | Capture Text                                               | Captures do not work. SnapText explains how to allow it.             |
+| **Accessibility**    | Pasting a copy from the history straight into a text field | Picking a copy only puts it on the clipboard. Everything else works. |
 
 Both are allowed in **System Settings → Privacy & Security**. The **Allow…** buttons in the SnapText window open
 the right page. SnapText uses Accessibility only when you pick a copy, to check that the app in front has a text
