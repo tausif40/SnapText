@@ -59,8 +59,8 @@ enum Preferences {
 
     static let defaultHistoryCopies = 500
     static let defaultHistoryDays = 30
-    /// The most days of copies the history keeps: one month.
-    static let maxHistoryDays = 30
+    /// The most days of copies the history keeps.
+    static let maxHistoryDays = 100
 
     /// How many copies the history keeps when it is limited by their number.
     static var historyCopies: Int {

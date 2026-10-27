@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 500" width="1280" height="500" role="img" aria-labelledby="title desc" font-family="-apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', Helvetica, Arial, sans-serif">
   <title id="title">What the clipboard history keeps, and for how long</title>
-  <desc id="desc">Kept: text you copy in any app and SnapText captures, with date and time, and it survives restarts. How much: the last 500 copies to start with, 1 to 1,000 copies or 1 to 30 days, never more than 1,000. Never kept: passwords and private copies, unless a setting allows them, images and files, blank text and copies over 1 MB, copies made while SnapText is closed.</desc>
+  <desc id="desc">Kept: text you copy in any app and SnapText captures, with date and time, and it survives restarts. How much: the last 500 copies to start with, 1 to 1,000 copies or 1 to 100 days, never more than 1,000. Never kept: passwords and private copies, unless a setting allows them, images and files, blank text and copies over 1 MB, copies made while SnapText is closed.</desc>
 
   <rect width="1280" height="500" rx="28" fill="#F5F8FF"/>
   <rect x="0.5" y="0.5" width="1279" height="499" rx="27.5" fill="none" stroke="#DCE4F2"/>
@@ -34,7 +34,7 @@
   <!-- <text x="640" y="236" font-size="13" fill="#2457C5" text-anchor="middle">to start with</text> -->
   <g font-size="15" fill="#111827">
     <circle cx="480" cy="284" r="3.5" fill="#3B82F6"/><text x="494" y="289">Or choose 1 to 1,000 copies</text>
-    <circle cx="480" cy="322" r="3.5" fill="#3B82F6"/><text x="494" y="327">Or the last 1 to 30 days of copies</text>
+    <circle cx="480" cy="322" r="3.5" fill="#3B82F6"/><text x="494" y="327">Or the last 1 to 100 days of copies</text>
     <circle cx="480" cy="360" r="3.5" fill="#3B82F6"/><text x="494" y="365">Never more than 1,000 in all</text>
   </g>
 

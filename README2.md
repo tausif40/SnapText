@@ -58,8 +58,8 @@ For every feature explained end to end, with pictures, read the [full guide](REA
   - **Search** as you type, and move through the list with <kbd>↑</kbd> and <kbd>↓</kbd>.
   - **Paste straight in.** Pick a copy while you are typing in a text field, and it is pasted there.
   - **Copy button** on every row, which turns into a tick once the copy is on the clipboard.
-  - **Keep what you want:** the last 500 copies to start with, up to 1,000, or the copies from the last month,
-    up to 30 days. It is saved on your Mac, so it survives a restart.
+  - **Keep what you want:** the last 500 copies to start with, up to 1,000, or the copies from the last 30 days,
+    up to 100 days. It is saved on your Mac, so it survives a restart.
   - **Move the window** anywhere on screen by dragging an empty part of it. It opens there next time.
   - **Glass background.** A **Popup opacity** slider, from 30% to 100%, lets what is behind show through, blurred.
 - **Passwords stay out, for your security.** Copies that password managers mark as private are not saved. A new
@@ -169,7 +169,7 @@ settings without leaving the list. The settings are in three groups.
 | **Save history** | Off: new copies are not saved. What is already saved stays until you clear it. |
 | **Paste into text fields** | On: picking a copy pastes it into the text field you were typing in. Off: it only goes on the clipboard. |
 | **Save passwords and private copies** | On: copies that password managers mark as private, such as passwords, are saved too, as plain text. Off to start with, for your security. |
-| **Limit by** | **Number of copies** keeps the most recent ones, 1 to 1,000, and 500 to start with. **Number of days** keeps those from the last 1 to 30 days. Either way, no more than 1,000 copies or 30 days are kept, and typing a larger number shows a red note. When the limit is not the default, a button sets it back to 500 copies or 30 days. |
+| **Limit by** | **Number of copies** keeps the most recent ones, 1 to 1,000, and 500 to start with. **Number of days** keeps those from the last 1 to 100 days, and 30 to start with. Either way, no more than 1,000 copies or 100 days are kept, and typing a larger number shows a red note. When the limit is not the default, a button sets it back to 500 copies or 30 days. |
 | **Popup opacity** | How solid the popup's background is, 30% to 100%. Lower it for a frosted glass look, with what is behind blurred. |
 | **Clear History** | Shows how many copies are saved, and deletes them all. Click it twice to confirm. |
 

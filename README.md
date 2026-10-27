@@ -40,8 +40,8 @@ SnapText now remembers the text you copy in any app, not only what it reads off 
 are typing.
 
 - **Saved on your Mac,** so your copies are still there after a restart. [What is kept →](#4-what-is-kept-and-for-how-long)
-- **Up to 1,000 copies, or the last 30 days.** Keep the last 500 copies to start with, up to 1,000, or every
-  copy from the last month, up to 30 days. [Settings →](#6-every-setting)
+- **Up to 1,000 copies, or up to 100 days.** Keep the last 500 copies to start with, up to 1,000, or every copy
+  from the last 30 days, up to 100 days. [Settings →](#6-every-setting)
 - **Passwords stay out,** for your security, unless you choose to save them. [Passwords →](#passwords-and-private-copies)
 
 [Read the full Clipboard History section →](#3-clipboard-history)
@@ -174,7 +174,7 @@ Press <kbd>Esc</kbd>, press <kbd>⌥ Option</kbd> + <kbd>V</kbd> again, or click
 ## 4. What is kept, and for how long
 
 <p align="center">
-  <img src="docs/images/feature-storage.svg" alt="What is kept: text you copy and captures, with date and time. How much: the last 500 copies to start with, up to 1,000 or by days. Never kept: passwords, images, blank text, copies made while SnapText is closed" width="100%">
+  <img src="docs/images/feature-storage.svg" alt="What is kept: text you copy and captures, with date and time. How much: the last 500 copies to start with, up to 1,000, or up to 100 days. Never kept: passwords, images, blank text, copies made while SnapText is closed" width="100%">
 </p>
 
 ### It lasts
@@ -192,11 +192,11 @@ restart, shut down, or update SnapText**. Copies leave the history only when:
 | You choose           | What is kept                                                      | Range         | Starts at |
 | -------------------- | ----------------------------------------------------------------- | ------------- | --------- |
 | **Number of copies** | The most recent copies. When a new one arrives, the oldest goes.  | 1 to 1,000    | **500**   |
-| **Number of days**   | The copies made in the last so many days. Older ones are deleted. | 1 to 30 days  | 30        |
+| **Number of days**   | The copies made in the last 30 days to start with, up to 100. Older ones are deleted. | 1 to 100 days | 30        |
 
 Whichever you choose, the history never holds more than **1,000 copies**. Typing a larger number shows a red
 note, _You can't save more than 1,000 copies_, and the limit stops at 1,000. In the same way, copies are kept
-for **30 days at most**. Typing more days shows _You can't keep more than 30 days_, and the limit stops at 30.
+for **100 days at most**. Typing more days shows _You can't keep more than 100 days_, and the limit stops at 100.
 
 Lowering the limit deletes the copies beyond it straight away. A **Use the Default** button appears whenever the
 limit is not the default, to set it back to 500 copies or 30 days.
@@ -306,7 +306,7 @@ popup. Changes take effect at once: there is nothing to save.
 | **Paste into text fields**            | On: picking a copy pastes it into the text field you were typing in. Off: it only goes on the clipboard.                                                                                      | On                          |
 | **Save passwords and private copies** | On: copies that password managers mark as private, such as passwords, are saved too, as plain text. Off for your security. See [Passwords and private copies](#passwords-and-private-copies). | Off                         |
 | **Limit by**                          | **Number of copies** or **Number of days**.                                                                                                                                                   | Number of copies            |
-| **Keep the last**                     | How many copies, or how many days.                                                                                                                                                            | 500 copies                  |
+| **Keep the last**                     | How many copies (up to 1,000), or how many days (up to 100).                                                                                                                                                            | 500 copies                  |
 | **Popup opacity**                     | How solid the history popup's background is, from 30% to 100%. Lower it to see what is behind, blurred like frosted glass.                                                                    | 100%                        |
 | **Clear History**                     | Shows how many copies are saved, and deletes them all. Click it twice to confirm.                                                                                                             |                             |
 
