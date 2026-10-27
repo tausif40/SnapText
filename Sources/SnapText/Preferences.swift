@@ -69,6 +69,17 @@ enum Preferences {
         limitsHistoryByDays ? .days(historyDays) : .copies(historyCopies)
     }
 
+    static let historyOpacityRange = 0.3...1.0
+
+    /// How opaque the clipboard history popup's background is, from 0.3 to 1.
+    static var historyOpacity: Double {
+        get { defaults.object(forKey: "historyOpacity") as? Double ?? 1 }
+        set {
+            defaults.set(newValue, forKey: "historyOpacity")
+            NotificationCenter.default.post(name: .historyOpacityChanged, object: nil)
+        }
+    }
+
     /// Where the user last dragged the history window to, or nil if they never have.
     static var historyWindowOrigin: CGPoint? {
         get {
@@ -79,4 +90,9 @@ enum Preferences {
         }
         set { defaults.set(newValue.map { [Double($0.x), Double($0.y)] }, forKey: "historyWindowOrigin") }
     }
+}
+
+extension Notification.Name {
+    /// Posted when the clipboard history popup's background opacity changes.
+    static let historyOpacityChanged = Notification.Name("historyOpacityChanged")
 }

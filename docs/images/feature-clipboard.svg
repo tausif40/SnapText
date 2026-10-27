@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 460" width="1280" height="460" role="img" aria-labelledby="title desc" font-family="-apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title id="title">Clipboard History</title>
+  <desc id="desc">Text you copy anywhere is saved in the history on your Mac. Press Option V, search, and pick a copy: it is pasted into the text field you are typing in, or the copy button puts it back on the clipboard.</desc>
+  <defs>
+    <g id="arrow" fill="none" stroke="#9AA6BA" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M0 0H26M18 -8L26 0L18 8"/>
+    </g>
+    <g id="copy" fill="none" stroke-width="1.6">
+      <rect x="0" y="4" width="10" height="12" rx="2.5"/>
+      <path d="M4 3.5V2.5A2.5 2.5 0 0 1 6.5 0H11.5A2.5 2.5 0 0 1 14 2.5V9.5A2.5 2.5 0 0 1 11.5 12H10.5"/>
+    </g>
+  </defs>
+
+  <rect width="1280" height="460" rx="28" fill="#F5F8FF"/>
+  <rect x="0.5" y="0.5" width="1279" height="459" rx="27.5" fill="none" stroke="#DCE4F2"/>
+
+  <text x="50" y="62" font-size="30" font-weight="700" fill="#111827">Clipboard History</text>
+  <text x="50" y="92" font-size="17" fill="#5B6475">Everything you copy is saved, so you can find it and paste it again later. Open it with ⌥ Option + V.</text>
+
+  <!-- 1. You copy -->
+  <text x="50" y="140" font-size="13" font-weight="700" fill="#2457C5" letter-spacing="1">1 · YOU COPY TEXT</text>
+  <rect x="50" y="156" width="300" height="60" rx="14" fill="#FFFFFF" stroke="#E3E8F0"/>
+  <rect x="66" y="170" width="44" height="32" rx="8" fill="#F1F4F9" stroke="#CBD3E1"/>
+  <text x="88" y="192" font-size="15" font-weight="600" fill="#111827" text-anchor="middle">⌘ C</text>
+  <text x="124" y="185" font-size="15" font-weight="600" fill="#111827">In any app</text>
+  <text x="124" y="204" font-size="13" fill="#5B6475">Safari, Notes, Mail, Terminal…</text>
+  <rect x="50" y="228" width="300" height="60" rx="14" fill="#FFFFFF" stroke="#E3E8F0"/>
+  <rect x="66" y="242" width="44" height="32" rx="8" fill="#F1F4F9" stroke="#CBD3E1"/>
+  <path d="M80 251H96M80 258H96M80 265H90" stroke="#111827" stroke-width="2" stroke-linecap="round"/>
+  <text x="124" y="257" font-size="15" font-weight="600" fill="#111827">Right-click → Copy</text>
+  <text x="124" y="276" font-size="13" fill="#5B6475">or any Copy button on a page</text>
+  <rect x="50" y="300" width="300" height="60" rx="14" fill="#FFFFFF" stroke="#E3E8F0"/>
+  <rect x="66" y="314" width="44" height="32" rx="8" fill="#3B82F6"/>
+  <text x="88" y="336" font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">⌥ X</text>
+  <text x="124" y="329" font-size="15" font-weight="600" fill="#111827">SnapText capture</text>
+  <text x="124" y="348" font-size="13" fill="#5B6475">text read off the screen</text>
+
+  <use href="#arrow" x="364" y="258"/>
+
+  <!-- 2. Saved -->
+  <text x="406" y="140" font-size="13" font-weight="700" fill="#2457C5" letter-spacing="1">2 · SNAPTEXT SAVES IT</text>
+  <rect x="406" y="156" width="300" height="204" rx="14" fill="#FFFFFF" stroke="#E3E8F0"/>
+  <text x="424" y="184" font-size="15" font-weight="600" fill="#111827">Invoice #4821</text>
+  <text x="424" y="202" font-size="12" fill="#8A93A3">Today at 9:41 AM</text>
+  <rect x="424" y="214" width="264" height="1" fill="#EEF1F6"/>
+  <text x="424" y="238" font-size="15" fill="#111827">https://tausif.info</text>
+  <text x="424" y="256" font-size="12" fill="#8A93A3">Today at 9:30 AM</text>
+  <rect x="424" y="268" width="264" height="1" fill="#EEF1F6"/>
+  <text x="424" y="292" font-size="15" fill="#111827">Meeting at 4 pm, design review</text>
+  <text x="424" y="310" font-size="12" fill="#8A93A3">Yesterday at 6:12 PM</text>
+  <path d="M406 326H706V346A14 14 0 0 1 692 360H420A14 14 0 0 1 406 346Z" fill="#EAF1FF"/>
+  <text x="556" y="348" font-size="13" font-weight="600" fill="#2457C5" text-anchor="middle">Newest first · on this Mac only</text>
+
+  <use href="#arrow" x="720" y="258"/>
+
+  <!-- 3. Find and use -->
+  <text x="762" y="140" font-size="13" font-weight="700" fill="#2457C5" letter-spacing="1">3 · PRESS ⌥V, SEARCH, PICK</text>
+  <rect x="762" y="156" width="468" height="60" rx="14" fill="#FFFFFF" stroke="#E3E8F0"/>
+  <rect x="778" y="170" width="436" height="32" rx="9" fill="#F1F3F7"/>
+  <circle cx="796" cy="185" r="6" fill="none" stroke="#8A93A3" stroke-width="2"/>
+  <path d="M800.5 189.5L805 194" stroke="#8A93A3" stroke-width="2" stroke-linecap="round"/>
+  <text x="814" y="191" font-size="15" fill="#111827">invoice</text>
+  <rect x="868" y="176" width="1.6" height="20" fill="#3B82F6"/>
+
+  <rect x="762" y="228" width="468" height="60" rx="14" fill="#FFFFFF" stroke="#E3E8F0"/>
+  <rect x="778" y="242" width="32" height="32" rx="8" fill="#22C55E"/>
+  <path d="M790 250V266M786 250H794M786 266H794" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+  <text x="824" y="257" font-size="15" font-weight="600" fill="#111827">Click it, or press ↩</text>
+  <text x="824" y="276" font-size="13" fill="#5B6475">Typing in a text field? It is pasted straight in.</text>
+
+  <rect x="762" y="300" width="468" height="60" rx="14" fill="#FFFFFF" stroke="#E3E8F0"/>
+  <rect x="778" y="314" width="32" height="32" rx="8" fill="#EAF1FF"/>
+  <use href="#copy" x="787" y="322" stroke="#2457C5"/>
+  <text x="824" y="329" font-size="15" font-weight="600" fill="#111827">Copy button</text>
+  <text x="824" y="348" font-size="13" fill="#5B6475">Back on the clipboard. The icon turns into a tick.</text>
+  <circle cx="1200" cy="330" r="11" fill="#22C55E"/>
+  <path d="M1194.5 330.5L1198.5 334.5L1205.5 326" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Extras -->
+  <rect x="50" y="384" width="1180" height="48" rx="14" fill="#FFFFFF" stroke="#E3E8F0"/>
+  <text x="640" y="414" font-size="14" fill="#5B6475" text-anchor="middle">↑ ↓ move through the list  ·  right-click a copy to delete it  ·  drag the window to move it  ·  gear button for settings  ·  esc closes</text>
+</svg>

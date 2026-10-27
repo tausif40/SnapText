@@ -233,23 +233,38 @@ final class HistoryPanel: NSObject, NSWindowDelegate, NSSearchFieldDelegate, NST
     // MARK: - Layout
 
     private func makeContent() -> NSView {
-        let background = NSVisualEffectView()
-        background.material = .popover
-        background.state = .active
-        background.maskImage = HUD.roundedMask(radius: 12)
-        for page in [listPage, settingsPage] {
+        // The pages sit beside the background rather than in it, so its opacity leaves them alone.
+        let content = NSView()
+        let blur = NSVisualEffectView(frame: .zero)
+        blur.material = .popover
+        blur.state = .active
+        blur.maskImage = HUD.roundedMask(radius: 12)
+        blur.autoresizingMask = [.width, .height]
+        // The blur always stays, like frosted glass. A solid fill over it fades in as the opacity goes up, so
+        // at full opacity a white window behind no longer shows through.
+        let fill = Backdrop(frame: .zero)
+        fill.wantsLayer = true
+        fill.autoresizingMask = [.width, .height]
+        let background = NSView()
+        background.addSubview(blur)
+        background.addSubview(fill)
+        fill.opacity = Preferences.historyOpacity
+        NotificationCenter.default.addObserver(forName: .historyOpacityChanged, object: nil, queue: .main) { _ in
+            MainActor.assumeIsolated { fill.opacity = Preferences.historyOpacity }
+        }
+        for page in [background, listPage, settingsPage] {
             page.translatesAutoresizingMaskIntoConstraints = false
-            background.addSubview(page)
+            content.addSubview(page)
             NSLayoutConstraint.activate([
-                page.topAnchor.constraint(equalTo: background.topAnchor),
-                page.bottomAnchor.constraint(equalTo: background.bottomAnchor),
-                page.leadingAnchor.constraint(equalTo: background.leadingAnchor),
-                page.trailingAnchor.constraint(equalTo: background.trailingAnchor),
+                page.topAnchor.constraint(equalTo: content.topAnchor),
+                page.bottomAnchor.constraint(equalTo: content.bottomAnchor),
+                page.leadingAnchor.constraint(equalTo: content.leadingAnchor),
+                page.trailingAnchor.constraint(equalTo: content.trailingAnchor),
             ])
         }
         buildList()
         buildSettings()
-        return background
+        return content
     }
 
     private func buildList() {
@@ -284,6 +299,14 @@ final class HistoryPanel: NSObject, NSWindowDelegate, NSSearchFieldDelegate, NST
         scroll.hasVerticalScroller = true
         scroll.autohidesScrollers = true
         scroll.drawsBackground = false
+        scroll.contentView.postsBoundsChangedNotifications = true
+        NotificationCenter.default.addObserver(
+            forName: NSView.boundsDidChangeNotification, object: scroll.contentView, queue: .main
+        ) { [table] _ in
+            MainActor.assumeIsolated {
+                table.enumerateAvailableRowViews { row, _ in (row as? EntryRowView)?.updateHover() }
+            }
+        }
 
         emptyNote.font = .systemFont(ofSize: 13)
         emptyNote.textColor = .secondaryLabelColor
@@ -391,6 +414,29 @@ private final class KeyPanel: NSPanel {
     }
 }
 
+/// The popup's background colour over the blur, with rounded corners and a hairline edge that keeps it apart
+/// from what is behind it.
+private final class Backdrop: NSView {
+    /// The popup opacity setting. At its lowest the colour is gone and only the blur shows.
+    var opacity = 1.0 {
+        didSet { needsDisplay = true }
+    }
+
+    override var wantsUpdateLayer: Bool { true }
+
+    override func updateLayer() {
+        guard let layer else { return }
+        layer.cornerRadius = 12
+        layer.borderWidth = 1
+        effectiveAppearance.performAsCurrentDrawingAppearance {
+            let range = Preferences.historyOpacityRange
+            let share = (opacity - range.lowerBound) / (range.upperBound - range.lowerBound)
+            layer.backgroundColor = NSColor.windowBackgroundColor.withAlphaComponent(0.92 * share).cgColor
+            layer.borderColor = NSColor.separatorColor.cgColor
+        }
+    }
+}
+
 /// A row that stays blue when selected, although the search field has the focus rather than the list, and
 /// lights up under the pointer.
 private final class EntryRowView: NSTableRowView {
@@ -409,6 +455,7 @@ private final class EntryRowView: NSTableRowView {
         // Always active, since SnapText is never the active app.
         addTrackingArea(NSTrackingArea(
             rect: .zero, options: [.mouseEnteredAndExited, .activeAlways, .inVisibleRect], owner: self))
+        updateHover()
     }
 
     override func mouseEntered(with event: NSEvent) {
@@ -416,6 +463,19 @@ private final class EntryRowView: NSTableRowView {
     }
 
     override func mouseExited(with event: NSEvent) {
+        isHovered = false
+    }
+
+    /// Scrolling moves rows under a still pointer without telling them, and reuses them for other copies,
+    /// so a row checks where the pointer is whenever its visible part changes.
+    func updateHover() {
+        guard let window else { return isHovered = false }
+        let point = convert(window.mouseLocationOutsideOfEventStream, from: nil)
+        isHovered = visibleRect.contains(point)
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
         isHovered = false
     }
 

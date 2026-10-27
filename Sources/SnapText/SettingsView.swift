@@ -27,6 +27,8 @@ final class SettingsView: NSView, NSTextFieldDelegate {
     private let limitUnit = NSTextField(labelWithString: "")
     private let limitWarning = SettingsView.note()
     private let defaultLimitButton = NSButton()
+    private let opacitySlider = NSSlider()
+    private let opacityValue = NSTextField(labelWithString: "")
     private let savedCount = NSTextField(labelWithString: "")
     private let clearButton = NSButton()
     private let captureShortcut = ShortcutField(shortcut: Preferences.shortcut)
@@ -84,6 +86,9 @@ final class SettingsView: NSView, NSTextFieldDelegate {
         let defaultValue = byDays ? Preferences.defaultHistoryDays : Preferences.defaultHistoryCopies
         defaultLimitButton.title = "Use the Default, \(defaultValue) \(byDays ? "Days" : "Copies")"
         defaultLimitButton.isHidden = value == defaultValue
+
+        opacitySlider.doubleValue = Preferences.historyOpacity
+        showOpacity()
 
         let count = history.entries.count
         savedCount.stringValue = switch count {
@@ -173,6 +178,15 @@ final class SettingsView: NSView, NSTextFieldDelegate {
         limitWarning.isHidden = !isShown
     }
 
+    @objc private func opacityChanged() {
+        Preferences.historyOpacity = opacitySlider.doubleValue
+        showOpacity()
+    }
+
+    private func showOpacity() {
+        opacityValue.stringValue = "\(Int((opacitySlider.doubleValue * 100).rounded()))%"
+    }
+
     @objc private func clearClicked() {
         if isConfirmingClear { history.removeAll() }
         isConfirmingClear.toggle()
@@ -253,6 +267,19 @@ final class SettingsView: NSView, NSTextFieldDelegate {
         defaultLimitButton.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
         defaultLimitButton.target = self
         defaultLimitButton.action = #selector(defaultLimitClicked)
+        opacitySlider.minValue = Preferences.historyOpacityRange.lowerBound
+        opacitySlider.maxValue = Preferences.historyOpacityRange.upperBound
+        opacitySlider.isContinuous = true
+        opacitySlider.controlSize = .small
+        opacitySlider.target = self
+        opacitySlider.action = #selector(opacityChanged)
+        opacitySlider.widthAnchor.constraint(equalToConstant: 120).isActive = true
+        opacityValue.font = .monospacedDigitSystemFont(ofSize: 12, weight: .regular)
+        opacityValue.textColor = .secondaryLabelColor
+        opacityValue.alignment = .right
+        opacityValue.widthAnchor.constraint(equalToConstant: 36).isActive = true
+        let opacity = NSStackView(views: [opacitySlider, opacityValue])
+        opacity.spacing = 6
         savedCount.font = .systemFont(ofSize: 13)
         clearButton.bezelStyle = .rounded
         clearButton.hasDestructiveAction = true
@@ -276,6 +303,7 @@ final class SettingsView: NSView, NSTextFieldDelegate {
             row("Paste into text fields", pasteSwitch, notes: [permissionNote]),
             row("Limit by", limitKind),
             row("Keep the last", limitValue, notes: [limitWarning, defaultLimitButton]),
+            row("Popup opacity", opacity),
             row(savedCount, clearButton),
         ])
         let captureGroup = Groups.box([
