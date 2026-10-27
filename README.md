@@ -19,6 +19,7 @@
   <a href="#using-snaptext">Using it</a> ·
   <a href="#troubleshooting">Troubleshooting</a> ·
   <a href="#under-the-hood">Under the hood</a> ·
+  <a href="#building-and-testing">Building</a> ·
   <a href="#support">Support</a>
 </p>
 
@@ -34,8 +35,11 @@
 - 🔒 **Private.** Recognition runs on your Mac with Apple's Vision framework. No account, no analytics, no network.
 - 🌍 **Many languages, detected automatically.** 28 on macOS 27, including Hindi, Chinese, Japanese and Arabic.
 - 📊 **Tables stay tables.** Rows are copied with tabs between the cells, so they paste straight into a spreadsheet.
-- ⌨️ **Your shortcut.** <kbd>⌥ Option</kbd> + <kbd>X</kbd> to start with; record any combination you prefer.
-- 🪶 **Small.** One icon in the menu bar, an app under 1 MB, about 800 lines of Swift you can read in an evening.
+- 📋 **Clipboard history.** <kbd>⌥ Option</kbd> + <kbd>V</kbd> shows what you copied recently, up to 1,000 copies,
+  with the date and time of each and a search box to find one again. Click one to paste it where you are typing.
+- ⌨️ **Your shortcuts.** <kbd>⌥ Option</kbd> + <kbd>X</kbd> and <kbd>⌥ Option</kbd> + <kbd>V</kbd> to start with;
+  record any combinations you prefer.
+- 🪶 **Small.** One icon in the menu bar, an app under 1 MB, about 1,900 lines of Swift you can read in an evening.
 - 💸 **Free and open source**, under the MIT license.
 
 ## Install
@@ -68,14 +72,16 @@ later, run `xcode-select --install`. You never have to open Xcode.
 
 1. Get the source: on GitHub, click the green **Code** button and choose **Download ZIP**, then unzip it.
    If you use Git, clone the repository instead.
-2. Open **Terminal**, go to the folder, and run the build script:
+2. Open **Terminal**, go to the folder, and run the build command:
 
    ```sh
    cd path/to/the/folder
    ./build.sh install
    ```
 
-The script builds SnapText, copies it to `/Applications` and opens it. It takes about a minute.
+This builds SnapText, copies it to `/Applications` and opens it. It takes about a minute. Run the same command
+again whenever you update the source. For the other commands, such as building without installing or running
+the tests, see [Building and testing](#building-and-testing).
 
 ### First launch
 
@@ -96,23 +102,74 @@ The script builds SnapText, copies it to `/Applications` and opens it. It takes 
 3. Paste it anywhere with <kbd>⌘ Command</kbd> + <kbd>V</kbd>. A small notice confirms each copy, and also
    appears when no text was found or when something went wrong.
 
+### Clipboard history
+
+SnapText remembers the text you copy in any app, not only the text it reads off the screen.
+
+1. Press <kbd>⌥ Option</kbd> + <kbd>V</kbd>, or choose **Clipboard History** from the menu bar. A small window
+   lists your copies, newest first, each with the date and time it was copied.
+2. Type to search. <kbd>↑</kbd> and <kbd>↓</kbd> move through the list.
+3. Press <kbd>Return</kbd> or click a copy to use it. If you were typing in a text field when you opened the
+   history, the copy is pasted straight into it. Otherwise it goes on the clipboard, ready to paste with
+   <kbd>⌘ Command</kbd> + <kbd>V</kbd>. <kbd>Esc</kbd> or a click elsewhere closes the window.
+
+The copy button at the end of each row puts that copy on the clipboard and turns into a tick, leaving the window
+open. Right-click a copy to delete it.
+
+To move the window, drag an empty part of it, such as the space around the search field. It opens in the same
+place next time, as long as that place is still on a screen.
+
+> [!NOTE]
+> Pasting into another app needs Accessibility permission, which macOS asks for the first time you pick a copy.
+> Without it, SnapText only puts the copy on the clipboard. You can allow it later from the settings, or in
+> **System Settings → Privacy & Security → Accessibility**.
+
+Copying the same text again moves it to the top instead of listing it twice. Copies larger than 1 MB are not saved.
+
+### Settings
+
+The gear button in the history window opens the settings. **Change Shortcuts…** in the menu bar opens them too.
+
+**Clipboard History**
+
+| Setting | What it does |
+| --- | --- |
+| **Shortcut** | Click it, then press the combination that should open the history. <kbd>Esc</kbd> keeps the current one. |
+| **Save history** | Off: new copies are not saved. What is already saved stays until you clear it. |
+| **Paste into text fields** | On: picking a copy pastes it into the text field you were typing in. Off: it only goes on the clipboard. |
+| **Limit by** | **Number of copies** keeps the most recent ones, 1 to 1,000, and 500 to start with. **Number of days** keeps those from the last 1 to 365 days. Either way, no more than 1,000 are kept, and typing a larger number says so. When the limit is not the default, a button sets it back to 500 copies or 30 days. |
+| **Clear History** | Deletes every saved copy. Click it twice to confirm. |
+
+**Capture Text**
+
+| Setting | What it does |
+| --- | --- |
+| **Shortcut** | Click it, then press the combination that should start a capture. |
+| **Keep line breaks** | On: the text keeps the lines it has on screen. Off: everything is joined into one line, which suits a sentence that wraps. |
+| **Show copied notice** | On: every copy is confirmed with a notice. Off: a copy that happens at once shows nothing, and only one that took a moment is confirmed. Notices for missing text and errors appear either way. |
+
+A shortcut must include <kbd>⌘</kbd>, <kbd>⌃</kbd> or <kbd>⌥</kbd>, unless it is a function key, and the two
+shortcuts must differ.
+
 ### The menu
 
 | Menu item | What it does |
 | --- | --- |
 | **Capture Text** | Starts a capture, the same as pressing the shortcut. |
-| **Keep Line Breaks** | On: the text keeps the lines it has on screen. Off: everything is joined into one line, which suits a sentence that wraps. |
-| **Show Copied Notice** | On: every copy is confirmed with a notice. Off: a copy that happens at once shows nothing, and only one that took a moment is confirmed. Notices for missing text and errors appear either way. |
-| **Change Shortcut…** | Press the key combination you want, then **Save**. It must include <kbd>⌘</kbd>, <kbd>⌃</kbd> or <kbd>⌥</kbd>, unless it is a function key. |
+| **Clipboard History** | Opens the clipboard history, the same as pressing its shortcut. |
+| **Keep Line Breaks** | The same as **Keep line breaks** in the [settings](#settings). |
+| **Show Copied Notice** | The same as **Show copied notice** in the [settings](#settings). |
+| **Change Shortcuts…** | Opens the [settings](#settings), where both shortcuts can be changed. |
 | **Launch at Login** | Starts SnapText whenever you log in. |
 | **Buy Me a Coffee** | Opens the [support page](https://tausif.info/OCRpay) in your browser. |
-| **Quit SnapText** | Quits the app and frees its shortcut. |
+| **Quit SnapText** | Quits the app and frees its shortcuts. |
 
 ### Good to know
 
 - **Tables.** A table, or a list of labels and values, is copied row by row with a tab between the cells.
-- **The shortcut belongs to SnapText while it runs.** With the default, <kbd>⌥</kbd> + <kbd>X</kbd> no longer types
-  `≈` in other apps. Choose another combination if you need that character.
+- **The shortcuts belong to SnapText while it runs.** With the default, <kbd>⌥</kbd> + <kbd>X</kbd> no longer types
+  `≈` in other apps. Choose another combination if you need that character. Likewise, <kbd>⌥</kbd> + <kbd>V</kbd>
+  opens the clipboard history instead of typing `√`.
 - **The first capture can be slow.** After installing, macOS prepares its text recognition models. SnapText starts
   that when it opens, but a capture made in the first half minute shows "Reading text…" until it is done. The same
   happens once, for about ten seconds, the first time it meets a new script such as Devanagari.
@@ -135,6 +192,11 @@ Earlier versions of macOS support fewer.
   *Buy Me a Coffee* only asks your browser to open a web page.
 - **Captures are not kept.** The selected area is saved to a temporary file just long enough to read it, then deleted.
 - **The result goes to the clipboard**, replacing what was there, and nowhere else.
+- **Accessibility permission**, if you give it, is used only when you pick a copy from the history: to check that
+  the app in front has a text field focused, and to press <kbd>⌘</kbd> + <kbd>V</kbd> there.
+- **The clipboard history stays on your Mac**, in `~/Library/Application Support/com.tausif.SnapText/History.json`.
+  Only text is saved. Copies that password managers mark as private are skipped. Turn the history off, or clear it,
+  in the settings.
 
 ## Troubleshooting
 
@@ -164,7 +226,7 @@ To keep the permission across rebuilds, see [Signing](#signing).
 <br>
 
 - Check that SnapText is running: its icon should be in the menu bar.
-- Another app may be using the same combination. Choose a different one under **Change Shortcut…**.
+- Another app may be using the same combination. Choose a different one under **Change Shortcuts…**.
 - A combination that macOS itself uses, such as <kbd>⌘</kbd> + <kbd>Space</kbd> for Spotlight, keeps doing what
   macOS uses it for. Pick one that is free.
 
@@ -222,7 +284,9 @@ column at a time avoids it.
    ```sh
    defaults delete com.tausif.SnapText
    rm -rf ~/Library/Caches/com.tausif.SnapText
+   rm -rf ~/Library/Application\ Support/com.tausif.SnapText
    tccutil reset ScreenCapture com.tausif.SnapText
+   tccutil reset Accessibility com.tausif.SnapText
    ```
 
 ## Under the hood
@@ -241,7 +305,12 @@ flowchart LR
   It runs off the main thread, and is warmed up when the app opens.
 - **Layout.** Vision reads side-by-side text one column at a time. That suits columns of prose but breaks a table
   into all of its first column followed by all of its second, so `TextLayout` puts tables back together row by row.
-- **The shortcut** is a Carbon hot key, which works system-wide without Accessibility permission.
+- **The shortcuts** are Carbon hot keys, which work system-wide without Accessibility permission.
+- **Pasting from the history** asks the Accessibility API whether the app in front has a text field focused, and
+  if so posts <kbd>⌘</kbd> + <kbd>V</kbd> to it with a Core Graphics event.
+- **Clipboard history.** macOS announces no clipboard changes, so `ClipboardWatcher` looks at the clipboard's change
+  count twice a second and saves any new text. The history window is a panel that takes key presses without
+  activating SnapText, so the app you were in stays in front, ready to paste into.
 
 | Path | What it holds |
 | --- | --- |
@@ -250,11 +319,15 @@ flowchart LR
 | `Sources/SnapText/ScreenCapture.swift` | Region selection and the Screen Recording permission |
 | `Sources/SnapText/TextRecognizer.swift` | Text recognition with Vision |
 | `Sources/SnapText/TextLayout.swift` | Turns recognized fragments into lines, and tables into rows |
-| `Sources/SnapText/GlobalHotKey.swift`, `Shortcut.swift` | The system-wide shortcut |
-| `Sources/SnapText/ShortcutRecorder.swift` | The dialog that records a new shortcut |
+| `Sources/SnapText/GlobalHotKey.swift`, `Shortcut.swift` | The system-wide shortcuts |
+| `Sources/SnapText/ShortcutField.swift` | The button in the settings that records a new shortcut |
+| `Sources/SnapText/ClipboardHistory.swift` | The saved copies, their limit, and search |
+| `Sources/SnapText/ClipboardWatcher.swift` | Notices new copies in any app |
+| `Sources/SnapText/HistoryPanel.swift` | The clipboard history window, and the settings behind its gear button |
+| `Sources/SnapText/Paster.swift` | Pastes a copy from the history into the app in front |
 | `Sources/SnapText/HUD.swift` | The notice shown for copies, slow captures, missing text and errors |
 | `Sources/SnapText/Preferences.swift` | Settings that persist between launches |
-| `Tests/SnapTextTests/` | Tests for layout, shortcuts and recognition |
+| `Tests/SnapTextTests/` | Tests for layout, shortcuts, recognition and the clipboard history |
 | `Resources/` | `Info.plist` and the app icon |
 | `Scripts/make-icon.swift` | Regenerates `Resources/AppIcon.icns` |
 | `build.sh` | Builds, installs, packages and tests the app |
@@ -263,18 +336,86 @@ flowchart LR
 
 ## Building and testing
 
-SnapText is a Swift package. `build.sh` wraps `swift build` and assembles the `.app` bundle around the result.
+SnapText is a Swift package. You build it with one script, `build.sh`, in the project folder. It runs
+`swift build` for you and wraps the result in a proper `SnapText.app`.
+
+### What you need
+
+- macOS 13 or later
+- Swift 6.2 or later, from Xcode 26 or from the Command Line Tools. On macOS 26 or later, install the Command Line
+  Tools with:
+
+  ```sh
+  xcode-select --install
+  ```
+
+  Check that it worked with `swift --version`.
+
+### Build and run, step by step
+
+1. Open **Terminal** and go to the project folder:
+
+   ```sh
+   cd path/to/SnapText
+   ```
+
+2. Build SnapText, install it in `/Applications` and open it:
+
+   ```sh
+   ./build.sh install
+   ```
+
+   This is the command you will use most. Run it again every time you change the code or download a new version.
+   If SnapText is already running, the script quits it first.
+
+   Type the command exactly, starting with a dot: `./build.sh` runs the script in this folder, while `/build.sh`
+   looks for it at the top of the disk and fails with `no such file or directory`. The same error means you are
+   in the wrong folder: run `ls` and check that `build.sh` is listed.
+
+3. If macOS says `permission denied`, make the script executable once and try again:
+
+   ```sh
+   chmod +x build.sh
+   ```
+
+### Every command
+
+Run these from the project folder.
+
+| Command | What it does | Where the result goes |
+| --- | --- | --- |
+| `./build.sh` | Builds the app without installing it | `build/SnapText.app` |
+| `./build.sh install` | Builds the app, replaces the copy in Applications and opens it | `/Applications/SnapText.app` |
+| `./build.sh test` | Runs all the tests | Results in Terminal |
+| `./build.sh package` | Builds for Apple silicon and Intel and zips it for sharing | `build/SnapText.zip` |
+| `./build.sh dmg` | The same as `package`, but as a disk image | `build/SnapText.dmg` |
+
+### Finding the app after a build
+
+- **After `./build.sh install`** there is nothing to do: SnapText is already in your Applications folder and
+  running, with its icon in the menu bar. Later, open it from Launchpad, Spotlight or Finder → Applications.
+- **After `./build.sh`** the app is inside the project folder. Run `open build` to show it in Finder, then drag
+  **SnapText.app** into **Applications** to install it.
+- **To install it on another Mac**, make a disk image or a zip, as the next section shows, and send that file.
+
+### Making a DMG or ZIP to share
+
+Run one of these from the project folder:
 
 ```sh
-./build.sh            # builds build/SnapText.app
-./build.sh install    # builds, copies it to /Applications and opens it
-./build.sh package    # builds for Apple silicon and Intel, and zips it as build/SnapText.zip
-./build.sh dmg        # the same, but as a disk image at build/SnapText.dmg
-./build.sh test       # runs the tests
+./build.sh dmg       # makes build/SnapText.dmg
+./build.sh package   # makes build/SnapText.zip
 ```
 
-`package` makes the zip that goes on the Releases page: the app, plus `docs/install-note.txt` as a note on how
-to open it. `dmg` puts the same two files in a disk image, beside a link to Applications to drag the app onto.
+Both build SnapText for Apple silicon and Intel Macs, and include `docs/install-note.txt` as a note on how to open
+the app. Run `open build` to see the file in Finder.
+
+- **The DMG** is the easiest to install from. Opening it shows a window with the app, an arrow and a link to
+  Applications, so installing is a single drag.
+- **The ZIP** is what goes on the Releases page. Unzip it, then drag **SnapText** into **Applications**.
+
+On the other Mac, open SnapText the way [Option 1: Download the app](#option-1-download-the-app) describes, since
+macOS blocks it the first time.
 
 The recognition tests run Vision for real, so the first test run takes a little under a minute while macOS
 prepares its models. Later runs take under a second.
@@ -300,6 +441,20 @@ The app icon is drawn in code. After changing `Scripts/make-icon.swift`, regener
 ```sh
 swift Scripts/make-icon.swift
 ```
+
+### The disk image window
+
+The window that `./build.sh dmg` sets up comes from two files in `Resources/`: `DMGBackground.tiff`, the picture
+with the arrow, and `DMGLayout.DS_Store`, where the icons go. To change it:
+
+```sh
+swift Scripts/make-dmg-background.swift   # redraws the background
+Scripts/make-dmg-layout.sh                # records where the icons go
+./build.sh dmg
+```
+
+`make-dmg-layout.sh` has Finder lay out a scratch disk image, so the first time macOS asks to let Terminal control
+Finder. Change the icon positions in both scripts together, since the arrow is drawn between them.
 
 <!-- ## Roadmap
 

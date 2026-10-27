@@ -1,7 +1,7 @@
 import AppKit
 import Carbon.HIToolbox
 
-/// A key combination that can trigger a capture from anywhere.
+/// A key combination that works from anywhere.
 struct Shortcut: Equatable {
     let keyCode: Int
     /// The key as a menu key equivalent: the character it types on its own, such as "x", or the character
@@ -9,7 +9,10 @@ struct Shortcut: Equatable {
     let key: String
     let modifiers: NSEvent.ModifierFlags
 
+    /// Captures text, until the user picks another.
     static let `default` = Shortcut(keyCode: kVK_ANSI_X, key: "x", modifiers: .option)
+    /// Opens the clipboard history, until the user picks another.
+    static let defaultHistory = Shortcut(keyCode: kVK_ANSI_V, key: "v", modifiers: .option)
 
     /// The combination the way macOS menus show it, e.g. "⌥X".
     var title: String {

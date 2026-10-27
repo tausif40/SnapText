@@ -38,6 +38,18 @@ make_app() {
     codesign --force --sign "$SIGN_IDENTITY" "$2"
 }
 
+# Makes the disk image build/SnapText.dmg from the folder $1. Its window shows the app beside a link to
+# Applications, on a background with an arrow from one to the other, so installing is a single drag. The layout
+# comes from Resources/DMGLayout.DS_Store, which Scripts/make-dmg-layout.sh records.
+make_dmg() {
+    ln -s /Applications "$1/Applications"
+    mkdir "$1/.background"
+    cp Resources/DMGBackground.tiff "$1/.background/background.tiff"
+    cp Resources/DMGLayout.DS_Store "$1/.DS_Store"
+    hdiutil create -volname SnapText -srcfolder "$1" -fs HFS+ -format UDZO -imagekey zlib-level=9 -ov \
+        build/SnapText.dmg -quiet
+}
+
 case "${1:-}" in
 test)
     # The Command Line Tools keep swift-testing's macro plugin outside the compiler's search path.
@@ -58,9 +70,7 @@ package | dmg)
     cp docs/install-note.txt "$folder/How to open SnapText.txt"
 
     if [ "$1" = dmg ]; then
-        # The disk image opens to the app beside a link to Applications, so installing is a single drag.
-        ln -s /Applications "$folder/Applications"
-        hdiutil create -volname SnapText -srcfolder "$folder" -format UDZO -ov build/SnapText.dmg
+        make_dmg "$folder"
         echo "Packaged build/SnapText.dmg"
     else
         rm -f build/SnapText.zip

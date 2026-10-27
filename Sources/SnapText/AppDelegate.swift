@@ -7,13 +7,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     /// True while a capture or one of its alerts is in progress, so the shortcut cannot start a second one.
     private var isBusy = false
 
+    private lazy var history = ClipboardHistory(file: ClipboardHistory.standardFile, limit: Preferences.historyLimit)
+    private lazy var clipboardWatcher = ClipboardWatcher(history: history)
+    private lazy var historyPanel: HistoryPanel = {
+        let panel = HistoryPanel(history: history)
+        panel.onChoose = { [weak self] text in self?.useFromHistory(text) }
+        panel.onChangeShortcut = { [weak self] shortcut, purpose in self?.change(purpose, to: shortcut) }
+        panel.onPauseShortcuts = { [weak self] paused in self?.pauseShortcuts(paused) }
+        return panel
+    }()
+
     private let captureItem = NSMenuItem(title: "Capture Text", action: #selector(captureText), keyEquivalent: "")
+    private let historyItem = NSMenuItem(
+        title: "Clipboard History", action: #selector(showHistory), keyEquivalent: "")
     private let lineBreaksItem = NSMenuItem(
         title: "Keep Line Breaks", action: #selector(toggleLineBreaks), keyEquivalent: "")
     private let copiedNoticeItem = NSMenuItem(
         title: "Show Copied Notice", action: #selector(toggleCopiedNotice), keyEquivalent: "")
     private let shortcutItem = NSMenuItem(
-        title: "Change Shortcut", action: #selector(changeShortcut), keyEquivalent: "")
+        title: "Change Shortcuts…", action: #selector(changeShortcuts), keyEquivalent: "")
     private let launchAtLoginItem = NSMenuItem(
         title: "Launch at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
     private let coffeeItem = NSMenuItem(title: "Buy Me a Coffee", action: #selector(buyMeACoffee), keyEquivalent: "")
@@ -30,7 +42,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         item.menu = makeMenu()
         statusItem = item
 
-        listen(for: Preferences.shortcut)
+        listenForShortcuts()
+        clipboardWatcher.start()
         TextRecognizer.warmUp()
         showWelcomeIfNeeded()
         // Nothing works without Screen Recording permission, so ask on every launch that lacks it. macOS only
@@ -118,7 +131,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         alert.informativeText = """
             Press \(Preferences.shortcut.title) and drag over any text on screen. The text is copied to the clipboard.
 
-            SnapText lives in the menu bar, where you can change the shortcut.
+            Press \(Preferences.historyShortcut.title) to see everything you copied recently, and search it.
+
+            SnapText lives in the menu bar, where you can change the shortcuts.
             """
         if !ScreenCapture.hasPermission {
             alert.informativeText += """
@@ -132,16 +147,45 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         alert.runModal()
     }
 
+    // MARK: - Clipboard history
+
+    @objc private func showHistory() {
+        guard !isBusy else { return }
+        historyPanel.toggle()
+    }
+
+    /// Puts `text` on the clipboard, and pastes it if the user is typing in a text field.
+    private func useFromHistory(_ text: String) {
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(text, forType: .string)
+        if Preferences.pastesFromHistory {
+            if Paster.isTypingInTextField {
+                Paster.paste()
+                return
+            }
+            // Ask once. The settings show how to allow it later.
+            if !Paster.hasPermission, !Preferences.hasAskedToPaste {
+                Preferences.hasAskedToPaste = true
+                Paster.requestPermission()
+            }
+        }
+        if Preferences.showCopiedNotice {
+            hud.show(.copied(text))
+        }
+    }
+
     // MARK: - Menu
 
     func makeMenu() -> NSMenu {
         let menu = NSMenu()
         menu.delegate = self
-        for item in [captureItem, lineBreaksItem, copiedNoticeItem, shortcutItem, launchAtLoginItem, coffeeItem] {
+        for item in [
+            captureItem, historyItem, lineBreaksItem, copiedNoticeItem, shortcutItem, launchAtLoginItem, coffeeItem,
+        ] {
             item.target = self
         }
         for item in [
-            captureItem, .separator(), lineBreaksItem, copiedNoticeItem, shortcutItem, launchAtLoginItem, .separator(),
+            captureItem, historyItem, .separator(), lineBreaksItem, copiedNoticeItem, shortcutItem, launchAtLoginItem, .separator(),
             coffeeItem, .separator(),
         ] {
             menu.addItem(item)
@@ -154,6 +198,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let shortcut = Preferences.shortcut
         captureItem.keyEquivalent = shortcut.key
         captureItem.keyEquivalentModifierMask = shortcut.modifiers
+        historyItem.keyEquivalent = Preferences.historyShortcut.key
+        historyItem.keyEquivalentModifierMask = Preferences.historyShortcut.modifiers
         lineBreaksItem.state = Preferences.keepLineBreaks ? .on : .off
         copiedNoticeItem.state = Preferences.showCopiedNotice ? .on : .off
         launchAtLoginItem.state = SMAppService.mainApp.status == .enabled ? .on : .off
@@ -167,34 +213,55 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         Preferences.showCopiedNotice.toggle()
     }
 
-    // MARK: - Shortcut
+    // MARK: - Shortcuts
 
-    /// Makes `shortcut` start a capture from anywhere. Returns false if the system refuses the combination.
-    @discardableResult
-    private func listen(for shortcut: Shortcut) -> Bool {
-        GlobalHotKey.register(shortcut) { [weak self] in self?.captureText() }
+    private func listenForShortcuts() {
+        listen(for: Preferences.shortcut, to: .capture)
+        listen(for: Preferences.historyShortcut, to: .history)
     }
 
-    @objc private func changeShortcut() {
-        guard !isBusy else { return }
-        isBusy = true
-        defer { isBusy = false }
-
-        // Stop listening while the dialog is open, so the current shortcut can be pressed like any other.
-        GlobalHotKey.unregister()
-        let previous = Preferences.shortcut
-        NSApp.activate(ignoringOtherApps: true)
-        let chosen = ShortcutRecorder(current: previous).runModal() ?? previous
-
-        if listen(for: chosen) {
-            Preferences.shortcut = chosen
-        } else {
-            listen(for: previous)
-            let alert = NSAlert()
-            alert.messageText = "\(chosen.title) can’t be used as a shortcut"
-            alert.informativeText = "macOS did not accept it. SnapText still uses \(previous.title)."
-            alert.runModal()
+    /// Makes `shortcut` do `purpose` from anywhere. Returns false if the system refuses the combination.
+    @discardableResult
+    private func listen(for shortcut: Shortcut, to purpose: GlobalHotKey.Purpose) -> Bool {
+        GlobalHotKey.register(shortcut, for: purpose) { [weak self] in
+            switch purpose {
+            case .capture: self?.captureText()
+            case .history: self?.showHistory()
+            }
         }
+    }
+
+    /// Stops the shortcuts working while a new one is recorded, so the current ones can be pressed like any others.
+    private func pauseShortcuts(_ paused: Bool) {
+        if paused {
+            GlobalHotKey.unregister(.capture)
+            GlobalHotKey.unregister(.history)
+        } else {
+            listenForShortcuts()
+        }
+    }
+
+    /// Makes `shortcut` do `purpose` from now on. Returns why it cannot, or nil once it does.
+    private func change(_ purpose: GlobalHotKey.Purpose, to shortcut: Shortcut) -> String? {
+        switch purpose {
+        case .capture where shortcut == Preferences.historyShortcut:
+            return "\(shortcut.title) already opens the clipboard history."
+        case .history where shortcut == Preferences.shortcut:
+            return "\(shortcut.title) already captures text."
+        default:
+            break
+        }
+        guard listen(for: shortcut, to: purpose) else { return "macOS did not accept \(shortcut.title). Try another." }
+        switch purpose {
+        case .capture: Preferences.shortcut = shortcut
+        case .history: Preferences.historyShortcut = shortcut
+        }
+        return nil
+    }
+
+    @objc private func changeShortcuts() {
+        guard !isBusy else { return }
+        historyPanel.show(settings: true)
     }
 
     @objc private func toggleLaunchAtLogin() {

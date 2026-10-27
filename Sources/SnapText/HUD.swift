@@ -141,7 +141,7 @@ final class HUD {
     }
 
     /// A stretchable rounded rectangle, used to clip the blurred background.
-    private static func roundedMask(radius: CGFloat) -> NSImage {
+    static func roundedMask(radius: CGFloat) -> NSImage {
         let side = radius * 2 + 1
         let mask = NSImage(size: NSSize(width: side, height: side), flipped: false) { rect in
             NSColor.black.setFill()
