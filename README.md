@@ -18,7 +18,7 @@
 </p>
 
 > This guide explains how to use SnapText. To install it, build it, or read how it works inside, see the
-> main [README](README.md).
+> main [README](README2.md).
 
 ## 1. SnapText at a glance
 
@@ -159,7 +159,7 @@ restart, shut down, or update SnapText**. Copies leave the history only when:
 - the limit you chose leaves no room for them, as explained below,
 - you delete one with a right-click,
 - you click **Clear History** in the settings, or
-- you [uninstall SnapText](README.md#uninstall) and remove its data.
+- you [uninstall SnapText](README2.md#uninstall) and remove its data.
 
 ### How much is kept
 
@@ -178,8 +178,8 @@ limit is not the default, to set it back to 500 copies or 30 days.
 
 ### Never kept
 
-- **Passwords and private copies.** Password managers such as 1Password mark what they copy as private, and
-  SnapText skips it.
+- **Passwords and private copies,** unless you choose to save them. See
+  [Passwords and private copies](#passwords-and-private-copies).
 - **Images and files.** The history is for text only.
 - **Blank copies,** made only of spaces or empty lines.
 - **Very large copies,** over 1 MB of text, so that the history stays quick to save.
@@ -187,6 +187,30 @@ limit is not the default, to set it back to 500 copies or 30 days.
   **Open SnapText at login** so it is always running.
 
 To stop saving new copies for a while, turn off **Save history**. What is already saved stays until you clear it.
+
+### Passwords and private copies
+
+<p align="center">
+  <img src="docs/images/feature-passwords.svg" alt="Save passwords and private copies is off to start with. Off: copies that password managers mark as private are skipped. On: they are saved as plain text, and a red warning shows in the settings" width="100%">
+</p>
+
+Password managers such as 1Password, and some other apps, mark what they copy as **private**. A password copied
+there is meant to be pasted once, not remembered.
+
+**For your security, SnapText does not save these copies.** The history is a plain text file, and anyone who
+opens the history on your Mac can read it, so a saved password would be easy to find.
+
+If you want them in the history anyway, for example on a Mac only you use:
+
+1. Open **Settings**, from the gear button in the history popup or the **Settings** tab of the SnapText window.
+2. Turn on **Save passwords and private copies**, in the Clipboard History group.
+
+A red note under the switch reminds you that passwords are being saved while it is on. Turn it off again at any
+time. It stops new private copies from being saved. Ones already saved stay until you delete them with a
+right-click or **Clear History**.
+
+> Some apps do not mark their copies as private. Text copied from them is saved like any other copy, whatever
+> this setting is.
 
 ### Where it is saved
 
@@ -253,8 +277,10 @@ popup. Changes take effect at once: there is nothing to save.
 | **Shortcut** | The keys that open the history. | <kbd>⌥</kbd> + <kbd>V</kbd> |
 | **Save history** | Off: new copies are not saved. | On |
 | **Paste into text fields** | On: picking a copy pastes it into the text field you were typing in. Off: it only goes on the clipboard. | On |
+| **Save passwords and private copies** | On: copies that password managers mark as private, such as passwords, are saved too, as plain text. Off for your security. See [Passwords and private copies](#passwords-and-private-copies). | Off |
 | **Limit by** | **Number of copies** or **Number of days**. | Number of copies |
 | **Keep the last** | How many copies, or how many days. | 500 copies |
+| **Popup opacity** | How solid the history popup's background is, from 30% to 100%. Lower it to see what is behind, blurred like frosted glass. | 100% |
 | **Clear History** | Shows how many copies are saved, and deletes them all. Click it twice to confirm. | |
 
 ### Capture Text (OCR)
@@ -303,7 +329,8 @@ field focused and to press <kbd>⌘</kbd> + <kbd>V</kbd> there.
 - **Captures are not kept.** The selected area is saved to a temporary file just long enough to read it, then
   deleted.
 - **The history stays on your Mac,** in one file you can delete at any time.
-- **Private copies are skipped,** such as passwords from password managers.
+- **Passwords are skipped,** for your security. Copies that password managers mark as private are saved only if
+  you turn on **Save passwords and private copies**, which is off to start with.
 
 ## 9. Questions
 
@@ -358,7 +385,7 @@ No. 1,000 is the most, so that the history stays quick to open and search. 500 a
 <br>
 
 Open the settings and click **Clear History** twice. To remove SnapText and all its data, follow
-[Uninstall](README.md#uninstall) in the main README.
+[Uninstall](README2.md#uninstall) in the main README.
 
 </details>
 
@@ -381,4 +408,4 @@ Made by **Mohd Tausif**.
 - Support SnapText: [Buy me a coffee](https://tausif.info/OCRpay)
 
 SnapText is free for personal and noncommercial use, under the
-[PolyForm Noncommercial License 1.0.0](LICENSE). See [License](README.md#license) for what that allows.
+[PolyForm Noncommercial License 1.0.0](LICENSE). See [License](README2.md#license) for what that allows.

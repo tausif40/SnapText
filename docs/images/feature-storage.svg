@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 500" width="1280" height="500" role="img" aria-labelledby="title desc" font-family="-apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', Helvetica, Arial, sans-serif">
   <title id="title">What the clipboard history keeps, and for how long</title>
-  <desc id="desc">Kept: text you copy in any app and SnapText captures, with date and time, and it survives restarts. How much: the last 500 copies to start with, 1 to 1,000 copies or 1 to 365 days, never more than 1,000. Never kept: passwords and private copies, images and files, blank text and copies over 1 MB, copies made while SnapText is closed.</desc>
+  <desc id="desc">Kept: text you copy in any app and SnapText captures, with date and time, and it survives restarts. How much: the last 500 copies to start with, 1 to 1,000 copies or 1 to 365 days, never more than 1,000. Never kept: passwords and private copies, unless a setting allows them, images and files, blank text and copies over 1 MB, copies made while SnapText is closed.</desc>
 
   <rect width="1280" height="500" rx="28" fill="#F5F8FF"/>
   <rect x="0.5" y="0.5" width="1279" height="499" rx="27.5" fill="none" stroke="#DCE4F2"/>
@@ -46,7 +46,7 @@
   <text x="914" y="167" font-size="20" font-weight="700" fill="#111827">Never kept</text>
   <g font-size="15" fill="#111827">
     <circle cx="882" cy="208" r="3.5" fill="#EF4444"/><text x="896" y="213">Passwords and private copies</text>
-    <text x="896" y="232" font-size="13" fill="#5B6475">that password managers mark as private</text>
+    <text x="896" y="232" font-size="13" fill="#5B6475">Off for security. A setting can allow it.</text>
     <circle cx="882" cy="262" r="3.5" fill="#EF4444"/><text x="896" y="267">Images and files: text only</text>
     <circle cx="882" cy="300" r="3.5" fill="#EF4444"/><text x="896" y="305">Blank text, and copies over 1 MB</text>
     <circle cx="882" cy="338" r="3.5" fill="#EF4444"/><text x="896" y="343">Copies made while SnapText is closed</text>

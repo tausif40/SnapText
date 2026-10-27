@@ -19,6 +19,10 @@ final class SettingsView: NSView, NSTextFieldDelegate {
     private let historyShortcutMessage = SettingsView.note()
     private let keepSwitch = SettingsView.switch()
     private let pasteSwitch = SettingsView.switch()
+    private let privateSwitch = SettingsView.switch()
+    /// Warns that passwords are being saved, while they are.
+    private let privateWarning = SettingsView.note()
+    private let privacy = SettingsView.note()
     /// Explains that pasting needs Accessibility permission, while it is missing.
     private let permissionNote = NSStackView()
     private let limitKind = NSPopUpButton()
@@ -76,6 +80,14 @@ final class SettingsView: NSView, NSTextFieldDelegate {
         historyShortcut.show(Preferences.historyShortcut)
         keepSwitch.state = Preferences.keepsHistory ? .on : .off
         pasteSwitch.state = Preferences.pastesFromHistory ? .on : .off
+        privateSwitch.state = Preferences.savesPrivateCopies ? .on : .off
+        privateWarning.isHidden = !Preferences.savesPrivateCopies
+        privacy.stringValue = Preferences.savesPrivateCopies
+            ? "Copies stay on this Mac. Lowering the limit deletes the older ones straight away."
+            : """
+                Copies stay on this Mac. Lowering the limit deletes the older ones straight away, and copies that \
+                password managers mark as private are never saved.
+                """
         permissionNote.isHidden = !Preferences.pastesFromHistory || Paster.hasPermission
         limitKind.selectItem(at: byDays ? 1 : 0)
         limitField.integerValue = value
@@ -115,6 +127,11 @@ final class SettingsView: NSView, NSTextFieldDelegate {
 
     @objc private func keepChanged() {
         Preferences.keepsHistory = keepSwitch.state == .on
+        update()
+    }
+
+    @objc private func privateChanged() {
+        Preferences.savesPrivateCopies = privateSwitch.state == .on
         update()
     }
 
@@ -228,6 +245,7 @@ final class SettingsView: NSView, NSTextFieldDelegate {
     private func build(margin: CGFloat) {
         for (control, action) in [
             (keepSwitch, #selector(keepChanged)), (pasteSwitch, #selector(pasteChanged)),
+            (privateSwitch, #selector(privateChanged)),
             (lineBreaksSwitch, #selector(lineBreaksChanged)), (noticeSwitch, #selector(noticeChanged)),
             (launchSwitch, #selector(launchChanged)),
         ] {
@@ -291,16 +309,17 @@ final class SettingsView: NSView, NSTextFieldDelegate {
         let limitValue = NSStackView(views: [limitField, limitStepper, limitUnit])
         limitValue.spacing = 4
 
-        let privacy = Self.note()
-        privacy.stringValue = """
-            Copies stay on this Mac. Lowering the limit deletes the older ones straight away, and copies that \
-            password managers mark as private are never saved.
+        privateWarning.textColor = .systemRed
+        privateWarning.stringValue = """
+            Passwords and other private copies are saved too, as plain text in the history file. Anyone using \
+            this Mac can see them in the history.
             """
 
         let historyGroup = Groups.box([
             row("Shortcut", historyShortcut, notes: [historyShortcutMessage]),
             row("Save history", keepSwitch),
             row("Paste into text fields", pasteSwitch, notes: [permissionNote]),
+            row("Save passwords and private copies", privateSwitch, notes: [privateWarning]),
             row("Limit by", limitKind),
             row("Keep the last", limitValue, notes: [limitWarning, defaultLimitButton]),
             row("Popup opacity", opacity),

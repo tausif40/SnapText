@@ -44,6 +44,13 @@ enum Preferences {
         set { defaults.set(newValue, forKey: "keepsHistory") }
     }
 
+    /// Whether copies that password managers and similar apps mark as private, such as passwords, are saved in
+    /// the history too. Off unless the user turns it on.
+    static var savesPrivateCopies: Bool {
+        get { defaults.bool(forKey: "savesPrivateCopies") }
+        set { defaults.set(newValue, forKey: "savesPrivateCopies") }
+    }
+
     /// Whether the history is limited by the age of its copies rather than by their number.
     static var limitsHistoryByDays: Bool {
         get { defaults.bool(forKey: "limitsHistoryByDays") }

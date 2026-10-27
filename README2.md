@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <a href="README2.md"><b>Full guide</b></a> ·
+  <a href="README.md"><b>Full guide</b></a> ·
   <a href="#whats-new-in-21">What's new</a> ·
   <a href="#install">Install</a> ·
   <a href="#using-snaptext">Using it</a> ·
@@ -40,6 +40,8 @@
 - 📊 **Tables stay tables.** Rows are copied with tabs between the cells, so they paste straight into a spreadsheet.
 - 📋 **Clipboard history.** <kbd>⌥ Option</kbd> + <kbd>V</kbd> shows what you copied recently, up to 1,000 copies,
   with the date and time of each and a search box to find one again. Click one to paste it where you are typing.
+- 🔐 **Passwords stay out.** Copies that password managers mark as private are never saved, unless you turn
+  that on in the settings.
 - ⌨️ **Your shortcuts.** <kbd>⌥ Option</kbd> + <kbd>X</kbd> and <kbd>⌥ Option</kbd> + <kbd>V</kbd> to start with;
   record any combinations you prefer.
 - 🪟 **Everything in one window.** Open SnapText to see its shortcuts, the permissions it has, and every setting.
@@ -49,7 +51,7 @@
 
 ## What's new in 2.1
 
-For every feature explained end to end, with pictures, read the [full guide](README2.md).
+For every feature explained end to end, with pictures, read the [full guide](README.md).
 
 - **Clipboard history.** SnapText remembers the text you copy in any app, not only the text it reads off the
   screen. Press <kbd>⌥ Option</kbd> + <kbd>V</kbd> to see it, with the date and time of each copy.
@@ -59,6 +61,10 @@ For every feature explained end to end, with pictures, read the [full guide](REA
   - **Keep what you want:** the last 500 copies to start with, up to 1,000, or the copies from the last so many
     days. It is saved on your Mac, so it survives a restart.
   - **Move the window** anywhere on screen by dragging an empty part of it. It opens there next time.
+  - **Glass background.** A **Popup opacity** slider, from 30% to 100%, lets what is behind show through, blurred.
+- **Passwords stay out, for your security.** Copies that password managers mark as private are not saved. A new
+  setting, **Save passwords and private copies**, saves them too. It is off to start with, and shows a red
+  warning while it is on.
 - **The SnapText window.** Opening SnapText shows a window with a **Home** tab, which lists both shortcuts and the
   permissions SnapText has, and a **Settings** tab, which holds every setting.
 - **New settings,** in three groups: Clipboard History, Capture Text (OCR) and General. The same settings are also
@@ -162,7 +168,9 @@ settings without leaving the list. The settings are in three groups.
 | **Shortcut** | Click it, then press the combination that should open the history. <kbd>Esc</kbd> keeps the current one. |
 | **Save history** | Off: new copies are not saved. What is already saved stays until you clear it. |
 | **Paste into text fields** | On: picking a copy pastes it into the text field you were typing in. Off: it only goes on the clipboard. |
+| **Save passwords and private copies** | On: copies that password managers mark as private, such as passwords, are saved too, as plain text. Off to start with, for your security. |
 | **Limit by** | **Number of copies** keeps the most recent ones, 1 to 1,000, and 500 to start with. **Number of days** keeps those from the last 1 to 365 days. Either way, no more than 1,000 are kept, and typing a larger number says so. When the limit is not the default, a button sets it back to 500 copies or 30 days. |
+| **Popup opacity** | How solid the popup's background is, 30% to 100%. Lower it for a frosted glass look, with what is behind blurred. |
 | **Clear History** | Shows how many copies are saved, and deletes them all. Click it twice to confirm. |
 
 **Capture Text (OCR)**
@@ -236,8 +244,9 @@ Earlier versions of macOS support fewer.
 - **Accessibility permission**, if you give it, is used only when you pick a copy from the history: to check that
   the app in front has a text field focused, and to press <kbd>⌘</kbd> + <kbd>V</kbd> there.
 - **The clipboard history stays on your Mac**, in `~/Library/Application Support/com.tausif.SnapText/History.json`.
-  Only text is saved. Copies that password managers mark as private are skipped. Turn the history off, or clear it,
-  in the settings.
+  Only text is saved. Turn the history off, or clear it, in the settings.
+- **Passwords are not saved.** Copies that password managers mark as private are skipped, for your security.
+  The setting **Save passwords and private copies** saves them too. It is off to start with.
 
 ## Troubleshooting
 

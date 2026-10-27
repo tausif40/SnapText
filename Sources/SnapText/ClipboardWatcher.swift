@@ -36,7 +36,8 @@ final class ClipboardWatcher {
         guard pasteboard.changeCount != changeCount else { return }
         changeCount = pasteboard.changeCount
 
-        guard Preferences.keepsHistory, Self.privateTypes.isDisjoint(with: pasteboard.types ?? []),
+        guard Preferences.keepsHistory,
+              Preferences.savesPrivateCopies || Self.privateTypes.isDisjoint(with: pasteboard.types ?? []),
               let text = pasteboard.string(forType: .string) else { return }
         history.add(text)
     }
