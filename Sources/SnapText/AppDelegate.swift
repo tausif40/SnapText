@@ -1,5 +1,4 @@
 import AppKit
-import ServiceManagement
 
 final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var statusItem: NSStatusItem?
@@ -9,6 +8,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     private lazy var history = ClipboardHistory(file: ClipboardHistory.standardFile, limit: Preferences.historyLimit)
     private lazy var clipboardWatcher = ClipboardWatcher(history: history)
+    private lazy var mainWindow: MainWindow = {
+        let window = MainWindow(history: history)
+        window.onCapture = { [weak self] in self?.captureText() }
+        window.onHistory = { [weak self] in self?.showHistory() }
+        window.settings.onChangeShortcut = { [weak self] shortcut, purpose in self?.change(purpose, to: shortcut) }
+        window.settings.onPauseShortcuts = { [weak self] paused in self?.pauseShortcuts(paused) }
+        return window
+    }()
     private lazy var historyPanel: HistoryPanel = {
         let panel = HistoryPanel(history: history)
         panel.onChoose = { [weak self] text in self?.useFromHistory(text) }
@@ -24,14 +31,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         title: "Keep Line Breaks", action: #selector(toggleLineBreaks), keyEquivalent: "")
     private let copiedNoticeItem = NSMenuItem(
         title: "Show Copied Notice", action: #selector(toggleCopiedNotice), keyEquivalent: "")
-    private let shortcutItem = NSMenuItem(
-        title: "Change Shortcuts…", action: #selector(changeShortcuts), keyEquivalent: "")
+    private let settingsItem = NSMenuItem(title: "Settings…", action: #selector(showSettings), keyEquivalent: ",")
     private let launchAtLoginItem = NSMenuItem(
         title: "Launch at Login", action: #selector(toggleLaunchAtLogin), keyEquivalent: "")
+    private let openItem = NSMenuItem(title: "Open SnapText", action: #selector(showMainWindow), keyEquivalent: "")
     private let coffeeItem = NSMenuItem(title: "Buy Me a Coffee", action: #selector(buyMeACoffee), keyEquivalent: "")
-
-    /// The page where people can chip in towards the app's upkeep.
-    private static let supportPage = URL(string: "https://tausif.info/OCRpay")!
 
     // MARK: - Lifecycle
 
@@ -45,12 +49,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         listenForShortcuts()
         clipboardWatcher.start()
         TextRecognizer.warmUp()
-        showWelcomeIfNeeded()
+        // At login, SnapText starts quietly in the menu bar.
+        if !wasLaunchedAtLogin {
+            mainWindow.show()
+        }
         // Nothing works without Screen Recording permission, so ask on every launch that lacks it. macOS only
         // shows its prompt until the user has answered once; after that this keeps SnapText in its list.
         if !ScreenCapture.hasPermission {
             ScreenCapture.requestPermission()
         }
+    }
+
+    /// Opening SnapText again while it runs, from Finder, Launchpad or Spotlight, shows its window.
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        mainWindow.show()
+        return false
     }
 
     func applicationWillTerminate(_ notification: Notification) {
@@ -116,35 +129,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         alert.addButton(withTitle: "Cancel")
 
         NSApp.activate(ignoringOtherApps: true)
-        if alert.runModal() == .alertFirstButtonReturn,
-           let settings = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture") {
-            NSWorkspace.shared.open(settings)
+        if alert.runModal() == .alertFirstButtonReturn {
+            NSWorkspace.shared.open(Constants.screenRecordingSettings)
         }
     }
 
-    private func showWelcomeIfNeeded() {
-        guard !Preferences.hasShownWelcome else { return }
-        Preferences.hasShownWelcome = true
-
-        let alert = NSAlert()
-        alert.messageText = "SnapText is ready"
-        alert.informativeText = """
-            Press \(Preferences.shortcut.title) and drag over any text on screen. The text is copied to the clipboard.
-
-            Press \(Preferences.historyShortcut.title) to see everything you copied recently, and search it.
-
-            SnapText lives in the menu bar, where you can change the shortcuts.
-            """
-        if !ScreenCapture.hasPermission {
-            alert.informativeText += """
-
-
-                macOS will now ask for Screen Recording permission, which SnapText needs to see the text you select.
-                """
-        }
-
-        NSApp.activate(ignoringOtherApps: true)
-        alert.runModal()
+    /// Whether macOS opened SnapText as a login item, rather than the user opening it.
+    private var wasLaunchedAtLogin: Bool {
+        guard let event = NSAppleEventManager.shared().currentAppleEvent else { return false }
+        return event.eventID == kAEOpenApplication
+            && event.paramDescriptor(forKeyword: keyAEPropData)?.enumCodeValue == keyAELaunchedAsLogInItem
     }
 
     // MARK: - Clipboard history
@@ -180,13 +174,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let menu = NSMenu()
         menu.delegate = self
         for item in [
-            captureItem, historyItem, lineBreaksItem, copiedNoticeItem, shortcutItem, launchAtLoginItem, coffeeItem,
+            captureItem, historyItem, lineBreaksItem, copiedNoticeItem, settingsItem, launchAtLoginItem, openItem,
+            coffeeItem,
         ] {
             item.target = self
         }
         for item in [
-            captureItem, historyItem, .separator(), lineBreaksItem, copiedNoticeItem, shortcutItem, launchAtLoginItem, .separator(),
-            coffeeItem, .separator(),
+            captureItem, historyItem, .separator(), lineBreaksItem, copiedNoticeItem, settingsItem, launchAtLoginItem, .separator(),
+            openItem, coffeeItem, .separator(),
         ] {
             menu.addItem(item)
         }
@@ -202,7 +197,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         historyItem.keyEquivalentModifierMask = Preferences.historyShortcut.modifiers
         lineBreaksItem.state = Preferences.keepLineBreaks ? .on : .off
         copiedNoticeItem.state = Preferences.showCopiedNotice ? .on : .off
-        launchAtLoginItem.state = SMAppService.mainApp.status == .enabled ? .on : .off
+        launchAtLoginItem.state = LaunchAtLogin.isEnabled ? .on : .off
     }
 
     @objc private func toggleLineBreaks() {
@@ -259,25 +254,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         return nil
     }
 
-    @objc private func changeShortcuts() {
-        guard !isBusy else { return }
-        historyPanel.show(settings: true)
+    @objc private func showMainWindow() {
+        mainWindow.show()
+    }
+
+    @objc private func showSettings() {
+        mainWindow.show(settings: true)
     }
 
     @objc private func toggleLaunchAtLogin() {
-        do {
-            if SMAppService.mainApp.status == .enabled {
-                try SMAppService.mainApp.unregister()
-            } else {
-                try SMAppService.mainApp.register()
-            }
-        } catch {
-            NSApp.activate(ignoringOtherApps: true)
-            NSAlert(error: error).runModal()
-        }
+        LaunchAtLogin.set(!LaunchAtLogin.isEnabled)
     }
 
     @objc private func buyMeACoffee() {
-        NSWorkspace.shared.open(Self.supportPage)
+        NSWorkspace.shared.open(Constants.supportPage)
     }
 }

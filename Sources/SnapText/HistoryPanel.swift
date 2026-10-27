@@ -3,9 +3,6 @@ import AppKit
 /// The clipboard history popup: a searchable list of what the user copied, with the app's settings behind the
 /// gear button. Picking an entry pastes it, and its copy button puts it back on the clipboard.
 final class HistoryPanel: NSObject, NSWindowDelegate, NSSearchFieldDelegate, NSTableViewDataSource, NSTableViewDelegate {
-    private static let copiesRange = 1...ClipboardHistory.capacity
-    private static let daysRange = 1...365
-
     private let history: ClipboardHistory
     /// Called with the text of the entry the user picks.
     var onChoose: (String) -> Void = { _ in }
@@ -26,26 +23,7 @@ final class HistoryPanel: NSObject, NSWindowDelegate, NSSearchFieldDelegate, NST
     private var shown: [ClipboardEntry] = []
 
     private let settingsPage = NSView()
-    private let settingsGrid = NSGridView()
-    private let historyShortcut = ShortcutField(shortcut: Preferences.historyShortcut)
-    private let historyShortcutMessage = NSTextField(wrappingLabelWithString: "")
-    private let keepSwitch = NSSwitch()
-    private let pasteSwitch = NSSwitch()
-    /// Explains that pasting needs Accessibility permission, while it is missing.
-    private let permissionNote = NSStackView()
-    private let limitKind = NSPopUpButton()
-    private let limitField = NSTextField()
-    private let limitStepper = NSStepper()
-    private let limitUnit = NSTextField(labelWithString: "")
-    private let limitWarning = NSTextField(wrappingLabelWithString: "")
-    private let defaultLimitButton = NSButton()
-    private let clearButton = NSButton()
-    private let captureShortcut = ShortcutField(shortcut: Preferences.shortcut)
-    private let captureShortcutMessage = NSTextField(wrappingLabelWithString: "")
-    private let lineBreaksSwitch = NSSwitch()
-    private let noticeSwitch = NSSwitch()
-    /// Whether the clear button has been clicked once and waits for the second click that confirms it.
-    private var isConfirmingClear = false
+    private let settings: SettingsView
 
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -57,7 +35,10 @@ final class HistoryPanel: NSObject, NSWindowDelegate, NSSearchFieldDelegate, NST
 
     init(history: ClipboardHistory) {
         self.history = history
+        settings = SettingsView(history: history, width: 400, margin: 16)
         super.init()
+        settings.onChangeShortcut = { [weak self] shortcut, purpose in self?.onChangeShortcut(shortcut, purpose) ?? nil }
+        settings.onPauseShortcuts = { [weak self] paused in self?.onPauseShortcuts(paused) }
         panel.level = .floating
         panel.isOpaque = false
         panel.backgroundColor = .clear
@@ -87,7 +68,7 @@ final class HistoryPanel: NSObject, NSWindowDelegate, NSSearchFieldDelegate, NST
     }
 
     func close() {
-        stopRecording()
+        settings.stopRecording()
         panel.orderOut(nil)
     }
 
@@ -180,13 +161,7 @@ final class HistoryPanel: NSObject, NSWindowDelegate, NSSearchFieldDelegate, NST
     }
 
     func controlTextDidChange(_ notification: Notification) {
-        if notification.object as? NSTextField === limitField {
-            // Say so while the user types it, before the value is cut down to the most there can be.
-            let typed = Int(limitField.stringValue.filter(\.isNumber)) ?? 0
-            showLimitWarning(typed > limitRange.upperBound)
-        } else {
-            reload()
-        }
+        reload()
     }
 
     /// The search field keeps the focus, so it passes on the keys that work the list.
@@ -240,155 +215,19 @@ final class HistoryPanel: NSObject, NSWindowDelegate, NSSearchFieldDelegate, NST
         reload()
     }
 
-    private func showPage(settings: Bool) {
-        listPage.isHidden = settings
-        settingsPage.isHidden = !settings
-        isConfirmingClear = false
-        stopRecording()
-        showLimitWarning(false)
-        if settings {
-            updateSettings()
+    @objc private func closeClicked() {
+        close()
+    }
+
+    private func showPage(settings showsSettings: Bool) {
+        listPage.isHidden = showsSettings
+        settingsPage.isHidden = !showsSettings
+        settings.reset()
+        if showsSettings {
             panel.makeFirstResponder(nil)
         } else {
             panel.makeFirstResponder(search)
         }
-    }
-
-    private var limitRange: ClosedRange<Int> {
-        Preferences.limitsHistoryByDays ? Self.daysRange : Self.copiesRange
-    }
-
-    @objc private func keepChanged() {
-        Preferences.keepsHistory = keepSwitch.state == .on
-        updateSettings()
-    }
-
-    @objc private func pasteChanged() {
-        Preferences.pastesFromHistory = pasteSwitch.state == .on
-        if Preferences.pastesFromHistory, !Paster.hasPermission {
-            Preferences.hasAskedToPaste = true
-            Paster.requestPermission()
-        }
-        updateSettings()
-    }
-
-    @objc private func allowPastingClicked() {
-        close()
-        Paster.requestPermission()
-        if let settings = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
-            NSWorkspace.shared.open(settings)
-        }
-    }
-
-    @objc private func limitKindChanged() {
-        Preferences.limitsHistoryByDays = limitKind.indexOfSelectedItem == 1
-        showLimitWarning(false)
-        applyLimit()
-    }
-
-    @objc private func limitValueChanged(_ sender: NSControl) {
-        // Anything that is not a whole number puts back the value there was, rather than deleting copies.
-        let typed = sender === limitStepper ? limitStepper.integerValue : Int(limitField.stringValue.filter(\.isNumber))
-        guard let typed, typed > 0 else { return updateSettings() }
-
-        let range = limitRange
-        showLimitWarning(typed > range.upperBound)
-        let value = min(typed, range.upperBound)
-        if Preferences.limitsHistoryByDays { Preferences.historyDays = value } else { Preferences.historyCopies = value }
-        applyLimit()
-    }
-
-    @objc private func defaultLimitClicked() {
-        if Preferences.limitsHistoryByDays {
-            Preferences.historyDays = Preferences.defaultHistoryDays
-        } else {
-            Preferences.historyCopies = Preferences.defaultHistoryCopies
-        }
-        showLimitWarning(false)
-        applyLimit()
-    }
-
-    private func applyLimit() {
-        history.limit = Preferences.historyLimit
-        updateSettings()
-    }
-
-    private func showLimitWarning(_ isShown: Bool) {
-        limitWarning.stringValue = Preferences.limitsHistoryByDays
-            ? "You can’t keep more than \(Self.daysRange.upperBound) days."
-            : "You can’t save more than \(ClipboardHistory.capacity.formatted()) copies."
-        show(limitWarning, isShown)
-    }
-
-    @objc private func clearClicked() {
-        if isConfirmingClear { history.removeAll() }
-        isConfirmingClear.toggle()
-        updateSettings()
-    }
-
-    @objc private func lineBreaksChanged() {
-        Preferences.keepLineBreaks = lineBreaksSwitch.state == .on
-    }
-
-    @objc private func noticeChanged() {
-        Preferences.showCopiedNotice = noticeSwitch.state == .on
-    }
-
-    /// Sets up a shortcut field to change the shortcut for `purpose`, with `message` below it for its hints.
-    private func connect(_ field: ShortcutField, to purpose: GlobalHotKey.Purpose, message: NSTextField) {
-        field.onRecord = { [weak self] shortcut in self?.onChangeShortcut(shortcut, purpose) ?? nil }
-        field.onMessage = { [weak self] text in
-            message.stringValue = text ?? ""
-            self?.show(message, text != nil)
-        }
-        field.onRecordingChange = { [weak self] isRecording in
-            guard let self else { return }
-            // One at a time.
-            if isRecording {
-                for other in [historyShortcut, captureShortcut] where other !== field { other.stopRecording() }
-            }
-            onPauseShortcuts(isRecording)
-        }
-    }
-
-    private func stopRecording() {
-        historyShortcut.stopRecording()
-        captureShortcut.stopRecording()
-    }
-
-    /// Shows or hides the row of the settings that holds `view`.
-    private func show(_ view: NSView, _ isShown: Bool) {
-        settingsGrid.cell(for: view)?.row?.isHidden = !isShown
-    }
-
-    private func updateSettings() {
-        let byDays = Preferences.limitsHistoryByDays
-        let range = limitRange
-        let value = byDays ? Preferences.historyDays : Preferences.historyCopies
-
-        historyShortcut.show(Preferences.historyShortcut)
-        keepSwitch.state = Preferences.keepsHistory ? .on : .off
-        pasteSwitch.state = Preferences.pastesFromHistory ? .on : .off
-        show(permissionNote, Preferences.pastesFromHistory && !Paster.hasPermission)
-        limitKind.selectItem(at: byDays ? 1 : 0)
-        limitField.integerValue = value
-        limitStepper.minValue = Double(range.lowerBound)
-        limitStepper.maxValue = Double(range.upperBound)
-        limitStepper.integerValue = value
-        limitUnit.stringValue = byDays ? (value == 1 ? "day" : "days") : (value == 1 ? "copy" : "copies")
-        let defaultValue = byDays ? Preferences.defaultHistoryDays : Preferences.defaultHistoryCopies
-        defaultLimitButton.title = "Use the Default, \(defaultValue) \(byDays ? "Days" : "Copies")"
-        show(defaultLimitButton, value != defaultValue)
-
-        let count = history.entries.count
-        clearButton.title = isConfirmingClear
-            ? "Click Again to Delete \(count == 1 ? "1 Copy" : "\(count.formatted()) Copies")"
-            : "Clear History"
-        clearButton.isEnabled = count > 0
-
-        captureShortcut.show(Preferences.shortcut)
-        lineBreaksSwitch.state = Preferences.keepLineBreaks ? .on : .off
-        noticeSwitch.state = Preferences.showCopiedNotice ? .on : .off
     }
 
     // MARK: - Layout
@@ -483,127 +322,23 @@ final class HistoryPanel: NSObject, NSWindowDelegate, NSSearchFieldDelegate, NST
 
     private func buildSettings() {
         let back = iconButton("chevron.left", label: "Back", action: #selector(closeSettings))
+        let close = iconButton("xmark", label: "Close", action: #selector(closeClicked))
         let title = NSTextField(labelWithString: "Settings")
         title.font = .systemFont(ofSize: 13, weight: .semibold)
         let line = NSBox()
         line.boxType = .separator
 
-        for (control, action) in [
-            (keepSwitch, #selector(keepChanged)), (pasteSwitch, #selector(pasteChanged)),
-            (lineBreaksSwitch, #selector(lineBreaksChanged)), (noticeSwitch, #selector(noticeChanged)),
-        ] {
-            control.target = self
-            control.action = action
-        }
-        connect(historyShortcut, to: .history, message: historyShortcutMessage)
-        connect(captureShortcut, to: .capture, message: captureShortcutMessage)
-
-        let permissionText = NSTextField(wrappingLabelWithString: "Pasting needs Accessibility permission.")
-        let allowButton = NSButton(title: "Allow in System Settings", target: self, action: #selector(allowPastingClicked))
-        allowButton.controlSize = .small
-        allowButton.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
-        permissionNote.setViews([permissionText, allowButton], in: .leading)
-        permissionNote.orientation = .vertical
-        permissionNote.alignment = .leading
-        permissionNote.spacing = 4
-
-        limitKind.addItems(withTitles: ["Number of copies", "Number of days"])
-        limitKind.target = self
-        limitKind.action = #selector(limitKindChanged)
-        limitField.alignment = .right
-        limitField.delegate = self
-        limitField.cell?.sendsActionOnEndEditing = true
-        limitField.target = self
-        limitField.action = #selector(limitValueChanged)
-        limitStepper.autorepeat = true
-        limitStepper.valueWraps = false
-        limitStepper.target = self
-        limitStepper.action = #selector(limitValueChanged)
-        limitWarning.textColor = .systemRed
-        defaultLimitButton.bezelStyle = .rounded
-        defaultLimitButton.controlSize = .small
-        defaultLimitButton.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
-        defaultLimitButton.target = self
-        defaultLimitButton.action = #selector(defaultLimitClicked)
-        clearButton.bezelStyle = .rounded
-        clearButton.hasDestructiveAction = true
-        clearButton.target = self
-        clearButton.action = #selector(clearClicked)
-
-        let note = NSTextField(wrappingLabelWithString: """
-            SnapText keeps at most \(ClipboardHistory.capacity.formatted()) copies, on this Mac only. \
-            Lowering the limit deletes the older copies straight away. Copies that password managers mark \
-            as private are never saved.
-            """)
-
-        for message in [permissionText, historyShortcutMessage, limitWarning, captureShortcutMessage, note] {
-            message.font = .systemFont(ofSize: 11)
-            if message !== limitWarning { message.textColor = .secondaryLabelColor }
-        }
-        for message in [permissionText, historyShortcutMessage, limitWarning, captureShortcutMessage] {
-            message.preferredMaxLayoutWidth = 190
-        }
-        note.preferredMaxLayoutWidth = 330
-
-        let value = NSStackView(views: [limitField, limitStepper, limitUnit])
-        value.spacing = 4
-        let historyHeading = Self.heading("Clipboard History")
-        let captureHeading = Self.heading("Capture Text")
-        let none = NSGridCell.emptyContentView
-        let grid = settingsGrid
-        for row in [
-            [historyHeading],
-            [Self.label("Shortcut"), historyShortcut],
-            [none, historyShortcutMessage],
-            [Self.label("Save history"), keepSwitch],
-            [Self.label("Paste into text fields"), pasteSwitch],
-            [none, permissionNote],
-            [Self.label("Limit by"), limitKind],
-            [Self.label("Keep the last"), value],
-            [none, limitWarning],
-            [none, defaultLimitButton],
-            [note],
-            [clearButton],
-            [captureHeading],
-            [Self.label("Shortcut"), captureShortcut],
-            [none, captureShortcutMessage],
-            [Self.label("Keep line breaks"), lineBreaksSwitch],
-            [Self.label("Show copied notice"), noticeSwitch],
-        ] {
-            grid.addRow(with: row)
-        }
-        grid.rowSpacing = 10
-        grid.columnSpacing = 10
-        grid.yPlacement = .center
-        grid.column(at: 0).xPlacement = .trailing
-        // Headings, the note and the button run across both columns.
-        for view in [historyHeading, captureHeading, note, clearButton] {
-            guard let row = grid.cell(for: view)?.row else { continue }
-            row.mergeCells(in: NSRange(location: 0, length: 2))
-            row.cell(at: 0).xPlacement = view === clearButton ? .center : .leading
-        }
-        grid.cell(for: captureHeading)?.row?.topPadding = 14
-        grid.cell(for: historyShortcutMessage)?.row?.topPadding = -4
-        grid.cell(for: captureShortcutMessage)?.row?.topPadding = -4
-        grid.cell(for: limitWarning)?.row?.topPadding = -4
-        grid.cell(for: defaultLimitButton)?.row?.topPadding = -4
-        for message in [historyShortcutMessage, permissionNote, limitWarning, captureShortcutMessage] {
-            show(message, false)
-        }
-
         // The settings are taller than the panel, so they scroll.
-        let content = FlippedView()
-        content.addSubview(grid)
         let scroll = NSScrollView()
-        scroll.documentView = content
+        scroll.documentView = settings
         scroll.hasVerticalScroller = true
         scroll.autohidesScrollers = true
         scroll.drawsBackground = false
 
-        for view in [back, title, line, scroll, content, grid] {
+        for view in [back, close, title, line, scroll, settings] {
             view.translatesAutoresizingMaskIntoConstraints = false
         }
-        for view in [back, title, line, scroll] {
+        for view in [back, close, title, line, scroll] {
             settingsPage.addSubview(view)
         }
         NSLayoutConstraint.activate([
@@ -611,6 +346,10 @@ final class HistoryPanel: NSObject, NSWindowDelegate, NSSearchFieldDelegate, NST
             back.leadingAnchor.constraint(equalTo: settingsPage.leadingAnchor, constant: 10),
             back.widthAnchor.constraint(equalToConstant: 24),
             back.heightAnchor.constraint(equalToConstant: 24),
+            close.centerYAnchor.constraint(equalTo: back.centerYAnchor),
+            close.trailingAnchor.constraint(equalTo: settingsPage.trailingAnchor, constant: -10),
+            close.widthAnchor.constraint(equalToConstant: 24),
+            close.heightAnchor.constraint(equalToConstant: 24),
             title.centerYAnchor.constraint(equalTo: back.centerYAnchor),
             title.centerXAnchor.constraint(equalTo: settingsPage.centerXAnchor),
             line.topAnchor.constraint(equalTo: back.bottomAnchor, constant: 10),
@@ -620,15 +359,9 @@ final class HistoryPanel: NSObject, NSWindowDelegate, NSSearchFieldDelegate, NST
             scroll.leadingAnchor.constraint(equalTo: settingsPage.leadingAnchor),
             scroll.trailingAnchor.constraint(equalTo: settingsPage.trailingAnchor),
             scroll.bottomAnchor.constraint(equalTo: settingsPage.bottomAnchor),
-            content.topAnchor.constraint(equalTo: scroll.contentView.topAnchor),
-            content.leadingAnchor.constraint(equalTo: scroll.contentView.leadingAnchor),
-            content.widthAnchor.constraint(equalTo: scroll.contentView.widthAnchor),
-            grid.topAnchor.constraint(equalTo: content.topAnchor, constant: 18),
-            grid.centerXAnchor.constraint(equalTo: content.centerXAnchor),
-            grid.bottomAnchor.constraint(equalTo: content.bottomAnchor, constant: -20),
-            limitField.widthAnchor.constraint(equalToConstant: 56),
-            historyShortcut.widthAnchor.constraint(greaterThanOrEqualToConstant: 96),
-            captureShortcut.widthAnchor.constraint(greaterThanOrEqualToConstant: 96),
+            settings.topAnchor.constraint(equalTo: scroll.contentView.topAnchor),
+            settings.leadingAnchor.constraint(equalTo: scroll.contentView.leadingAnchor),
+            settings.widthAnchor.constraint(equalTo: scroll.contentView.widthAnchor),
         ])
     }
 
@@ -644,17 +377,6 @@ final class HistoryPanel: NSObject, NSWindowDelegate, NSSearchFieldDelegate, NST
         button.action = action
         return button
     }
-
-    private static func label(_ text: String) -> NSTextField {
-        NSTextField(labelWithString: text)
-    }
-
-    private static func heading(_ text: String) -> NSTextField {
-        let heading = NSTextField(labelWithString: text)
-        heading.font = .systemFont(ofSize: 12, weight: .semibold)
-        heading.textColor = .secondaryLabelColor
-        return heading
-    }
 }
 
 /// A panel that takes key presses without making SnapText the active app, so the app the user was in stays
@@ -667,11 +389,6 @@ private final class KeyPanel: NSPanel {
     override func cancelOperation(_ sender: Any?) {
         onCancel?()
     }
-}
-
-/// Lays out its subviews from the top, as a scrolling page of settings reads.
-private final class FlippedView: NSView {
-    override var isFlipped: Bool { true }
 }
 
 /// A row that stays blue when selected, although the search field has the focus rather than the list, and

@@ -39,7 +39,7 @@
   with the date and time of each and a search box to find one again. Click one to paste it where you are typing.
 - ⌨️ **Your shortcuts.** <kbd>⌥ Option</kbd> + <kbd>X</kbd> and <kbd>⌥ Option</kbd> + <kbd>V</kbd> to start with;
   record any combinations you prefer.
-- 🪶 **Small.** One icon in the menu bar, an app under 1 MB, about 1,900 lines of Swift you can read in an evening.
+- 🪶 **Small.** One icon in the menu bar, an app under 1 MB, about 2,500 lines of Swift you can read in an evening.
 - 💸 **Free and open source**, under the MIT license.
 
 ## Install
@@ -85,7 +85,7 @@ the tests, see [Building and testing](#building-and-testing).
 
 ### First launch
 
-1. SnapText says hello and tells you its shortcut. Click **OK**.
+1. SnapText opens its window, which shows its shortcuts and the permissions it has.
 2. macOS asks to let SnapText record the screen. Click **Open System Settings**, switch **SnapText** on, and
    choose **Quit & Reopen** when macOS offers it.
 3. Press <kbd>⌥ Option</kbd> + <kbd>X</kbd> and drag over some text.
@@ -128,7 +128,9 @@ Copying the same text again moves it to the top instead of listing it twice. Cop
 
 ### Settings
 
-The gear button in the history window opens the settings. **Change Shortcuts…** in the menu bar opens them too.
+Every setting is in the **Settings** tab of the [SnapText window](#the-snaptext-window). **Settings…** in the menu
+bar (<kbd>⌘</kbd> + <kbd>,</kbd>) opens it there, and the gear button in the history window shows the same
+settings without leaving the list. The settings are in three groups.
 
 **Clipboard History**
 
@@ -138,9 +140,9 @@ The gear button in the history window opens the settings. **Change Shortcuts…*
 | **Save history** | Off: new copies are not saved. What is already saved stays until you clear it. |
 | **Paste into text fields** | On: picking a copy pastes it into the text field you were typing in. Off: it only goes on the clipboard. |
 | **Limit by** | **Number of copies** keeps the most recent ones, 1 to 1,000, and 500 to start with. **Number of days** keeps those from the last 1 to 365 days. Either way, no more than 1,000 are kept, and typing a larger number says so. When the limit is not the default, a button sets it back to 500 copies or 30 days. |
-| **Clear History** | Deletes every saved copy. Click it twice to confirm. |
+| **Clear History** | Shows how many copies are saved, and deletes them all. Click it twice to confirm. |
 
-**Capture Text**
+**Capture Text (OCR)**
 
 | Setting | What it does |
 | --- | --- |
@@ -148,8 +150,23 @@ The gear button in the history window opens the settings. **Change Shortcuts…*
 | **Keep line breaks** | On: the text keeps the lines it has on screen. Off: everything is joined into one line, which suits a sentence that wraps. |
 | **Show copied notice** | On: every copy is confirmed with a notice. Off: a copy that happens at once shows nothing, and only one that took a moment is confirmed. Notices for missing text and errors appear either way. |
 
+**General**
+
+| Setting | What it does |
+| --- | --- |
+| **Open SnapText at login** | Starts SnapText, in the menu bar only, whenever you log in. |
+
 A shortcut must include <kbd>⌘</kbd>, <kbd>⌃</kbd> or <kbd>⌥</kbd>, unless it is a function key, and the two
 shortcuts must differ.
+
+### The SnapText window
+
+Opening SnapText from Applications, Launchpad or Spotlight shows its window, even while it is already running.
+Closing it leaves SnapText running in the menu bar. When SnapText starts at login, it starts in the menu bar only.
+
+- **Home** lists both shortcuts with a button for each, and shows whether Screen Recording and Accessibility are
+  allowed, with a button to allow each one that is not. Below that are **Buy Me a Coffee** and who made SnapText.
+- **Settings** holds [every setting](#settings).
 
 ### The menu
 
@@ -159,8 +176,9 @@ shortcuts must differ.
 | **Clipboard History** | Opens the clipboard history, the same as pressing its shortcut. |
 | **Keep Line Breaks** | The same as **Keep line breaks** in the [settings](#settings). |
 | **Show Copied Notice** | The same as **Show copied notice** in the [settings](#settings). |
-| **Change Shortcuts…** | Opens the [settings](#settings), where both shortcuts can be changed. |
-| **Launch at Login** | Starts SnapText whenever you log in. |
+| **Settings…** | Opens the [settings](#settings) in the SnapText window. |
+| **Open SnapText** | Opens the SnapText window. |
+| **Launch at Login** | The same as **Open SnapText at login** in the [settings](#settings). |
 | **Buy Me a Coffee** | Opens the [support page](https://tausif.info/OCRpay) in your browser. |
 | **Quit SnapText** | Quits the app and frees its shortcuts. |
 
@@ -226,7 +244,7 @@ To keep the permission across rebuilds, see [Signing](#signing).
 <br>
 
 - Check that SnapText is running: its icon should be in the menu bar.
-- Another app may be using the same combination. Choose a different one under **Change Shortcuts…**.
+- Another app may be using the same combination. Choose a different one under **Settings…**.
 - A combination that macOS itself uses, such as <kbd>⌘</kbd> + <kbd>Space</kbd> for Spotlight, keeps doing what
   macOS uses it for. Pick one that is free.
 
@@ -323,8 +341,12 @@ flowchart LR
 | `Sources/SnapText/ShortcutField.swift` | The button in the settings that records a new shortcut |
 | `Sources/SnapText/ClipboardHistory.swift` | The saved copies, their limit, and search |
 | `Sources/SnapText/ClipboardWatcher.swift` | Notices new copies in any app |
-| `Sources/SnapText/HistoryPanel.swift` | The clipboard history window, and the settings behind its gear button |
+| `Sources/SnapText/HistoryPanel.swift` | The clipboard history window |
 | `Sources/SnapText/Paster.swift` | Pastes a copy from the history into the app in front |
+| `Sources/SnapText/MainWindow.swift` | The window that opens when you open SnapText, with its Home and Settings tabs |
+| `Sources/SnapText/SettingsView.swift` | Every setting, shown in the SnapText window and behind the history's gear button |
+| `Sources/SnapText/LaunchAtLogin.swift` | Opening SnapText at login |
+| `Sources/SnapText/Constants.swift` | The developer's details, and every link and web address the app opens |
 | `Sources/SnapText/HUD.swift` | The notice shown for copies, slow captures, missing text and errors |
 | `Sources/SnapText/Preferences.swift` | Settings that persist between launches |
 | `Tests/SnapTextTests/` | Tests for layout, shortcuts, recognition and the clipboard history |
@@ -482,7 +504,8 @@ SnapText is released under the [MIT License](LICENSE).
 
 ## Developer
 
-Made by **Tausif**.
+Made by **Mohd Tausif**.
 
 - Website: [tausif.info](https://tausif.info)
+- Email: [tausif6040@gmail.com](mailto:tausif6040@gmail.com)
 - Bugs and feature requests: [open an issue](../../issues)

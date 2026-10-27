@@ -79,9 +79,4 @@ enum Preferences {
         }
         set { defaults.set(newValue.map { [Double($0.x), Double($0.y)] }, forKey: "historyWindowOrigin") }
     }
-
-    static var hasShownWelcome: Bool {
-        get { defaults.bool(forKey: "hasShownWelcome") }
-        set { defaults.set(newValue, forKey: "hasShownWelcome") }
-    }
 }
