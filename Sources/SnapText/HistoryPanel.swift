@@ -53,6 +53,8 @@ final class HistoryPanel: NSObject, NSWindowDelegate, NSSearchFieldDelegate, NST
         panel.contentView = makeContent()
     }
 
+    var isVisible: Bool { panel.isVisible }
+
     func toggle() {
         if panel.isVisible { close() } else { show() }
     }
