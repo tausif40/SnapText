@@ -56,7 +56,7 @@ For every feature explained end to end, with pictures, read the [full guide](REA
 - **Clipboard history.** SnapText remembers the text you copy in any app, not only the text it reads off the
   screen. Press <kbd>⌥ Option</kbd> + <kbd>V</kbd> to see it, with the date and time of each copy.
   - **Search** as you type, and move through the list with <kbd>↑</kbd> and <kbd>↓</kbd>.
-  - **Paste straight in.** Pick a copy while you are typing in a text field, and it is pasted there.
+  - **Paste straight in.** Pick a copy, and it is pasted into the app you were in, where your cursor was.
   - **Copy button** on every row, which turns into a tick once the copy is on the clipboard.
   - **Keep what you want:** the last 500 copies to start with, up to 1,000, or the copies from the last 30 days,
     up to 100 days. It is saved on your Mac, so it survives a restart.
@@ -138,8 +138,8 @@ SnapText remembers the text you copy in any app, not only the text it reads off 
 1. Press <kbd>⌥ Option</kbd> + <kbd>V</kbd>, or choose **Clipboard History** from the menu bar. A small window
    lists your copies, newest first, each with the date and time it was copied.
 2. Type to search. <kbd>↑</kbd> and <kbd>↓</kbd> move through the list.
-3. Press <kbd>Return</kbd> or click a copy to use it. If you were typing in a text field when you opened the
-   history, the copy is pasted straight into it. Otherwise it goes on the clipboard, ready to paste with
+3. Press <kbd>Return</kbd> or click a copy to use it. The copy is pasted straight into the app you were in
+   when you opened the history, and also stays on the clipboard, ready to paste with
    <kbd>⌘ Command</kbd> + <kbd>V</kbd>. <kbd>Esc</kbd> or a click elsewhere closes the window.
 
 The copy button at the end of each row puts that copy on the clipboard and turns into a tick, leaving the window
@@ -167,7 +167,6 @@ settings without leaving the list. The settings are in three groups.
 | --- | --- |
 | **Shortcut** | Click it, then press the combination that should open the history. <kbd>Esc</kbd> keeps the current one. |
 | **Save history** | Off: new copies are not saved. What is already saved stays until you clear it. |
-| **Paste into text fields** | On: picking a copy pastes it into the text field you were typing in. Off: it only goes on the clipboard. |
 | **Save passwords and private copies** | On: copies that password managers mark as private, such as passwords, are saved too, as plain text. Off to start with, for your security. |
 | **Limit by** | **Number of copies** keeps the most recent ones, 1 to 1,000, and 500 to start with. **Number of days** keeps those from the last 1 to 100 days, and 30 to start with. Either way, no more than 1,000 copies or 100 days are kept, and typing a larger number shows a red note. When the limit is not the default, a button sets it back to 500 copies or 30 days. |
 | **Popup opacity** | How solid the popup's background is, 30% to 100%. Lower it for a frosted glass look, with what is behind blurred. |
@@ -241,8 +240,8 @@ Earlier versions of macOS support fewer.
   *Buy Me a Coffee* only asks your browser to open a web page.
 - **Captures are not kept.** The selected area is saved to a temporary file just long enough to read it, then deleted.
 - **The result goes to the clipboard**, replacing what was there, and nowhere else.
-- **Accessibility permission**, if you give it, is used only when you pick a copy from the history: to check that
-  the app in front has a text field focused, and to press <kbd>⌘</kbd> + <kbd>V</kbd> there.
+- **Accessibility permission**, if you give it, is used only when you pick a copy from the history, to press
+  <kbd>⌘</kbd> + <kbd>V</kbd> in the app you were in.
 - **The clipboard history stays on your Mac**, in `~/Library/Application Support/com.tausif.SnapText/History.json`.
   Only text is saved. Turn the history off, or clear it, in the settings.
 - **Passwords are not saved.** Copies that password managers mark as private are skipped, for your security.
@@ -356,8 +355,10 @@ flowchart LR
 - **Layout.** Vision reads side-by-side text one column at a time. That suits columns of prose but breaks a table
   into all of its first column followed by all of its second, so `TextLayout` puts tables back together row by row.
 - **The shortcuts** are Carbon hot keys, which work system-wide without Accessibility permission.
-- **Pasting from the history** asks the Accessibility API whether the app in front has a text field focused, and
-  if so posts <kbd>⌘</kbd> + <kbd>V</kbd> to it with a Core Graphics event.
+- **Pasting from the history** notes the app in front when the history opens, and once a copy is picked posts
+  <kbd>⌘</kbd> + <kbd>V</kbd> to it with a Core Graphics event. It does not check for a text field first:
+  browsers do not say what has the focus inside a web page, and <kbd>⌘</kbd> + <kbd>V</kbd> does nothing where
+  there is nothing to paste into.
 - **Clipboard history.** macOS announces no clipboard changes, so `ClipboardWatcher` looks at the clipboard's change
   count twice a second and saves any new text. The history window is a panel that takes key presses without
   activating SnapText, so the app you were in stays in front, ready to paste into.

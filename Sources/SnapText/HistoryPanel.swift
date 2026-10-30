@@ -124,9 +124,8 @@ final class HistoryPanel: NSObject, NSWindowDelegate, NSSearchFieldDelegate, NST
 
         let count = history.entries.count
         let saved = count == 1 ? "1 copy" : "\(count.formatted()) copies"
-        let use = Preferences.pastesFromHistory ? "↩ to paste" : "↩ to copy"
         footer.stringValue = Preferences.keepsHistory
-            ? "\(saved)  ·  \(use)  ·  esc to close"
+            ? "\(saved)  ·  ↩ to paste  ·  esc to close"
             : "History is off. Turn it on in Settings."
     }
 

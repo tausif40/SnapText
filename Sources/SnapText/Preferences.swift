@@ -26,12 +26,6 @@ enum Preferences {
         set { defaults.set(newValue.propertyList, forKey: "historyShortcut") }
     }
 
-    /// Whether picking a copy from the history pastes it into the text field the user is typing in.
-    static var pastesFromHistory: Bool {
-        get { defaults.object(forKey: "pastesFromHistory") as? Bool ?? true }
-        set { defaults.set(newValue, forKey: "pastesFromHistory") }
-    }
-
     /// Whether SnapText has asked macOS for the Accessibility permission that pasting needs.
     static var hasAskedToPaste: Bool {
         get { defaults.bool(forKey: "hasAskedToPaste") }

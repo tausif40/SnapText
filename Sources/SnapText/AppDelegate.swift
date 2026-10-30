@@ -5,8 +5,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private lazy var hud = HUD()
     /// True while a capture or one of its alerts is in progress, so the shortcut cannot start a second one.
     private var isBusy = false
-    /// The app the user was typing in when the clipboard history opened, which a copy picked from it is pasted into.
-    private var pasteTarget: Paster.Target?
+    /// The app the user was in when the clipboard history opened, which a copy picked from it is pasted into.
+    private var pasteTarget: NSRunningApplication?
 
     private lazy var history = ClipboardHistory(file: ClipboardHistory.standardFile, limit: Preferences.historyLimit)
     private lazy var clipboardWatcher = ClipboardWatcher(history: history)
@@ -148,28 +148,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     @objc private func showHistory() {
         guard !isBusy else { return }
         if !historyPanel.isVisible {
-            // Asked now, while that app still has the keyboard. Once the history panel takes it, the app's text
-            // field is no longer focused, and only gets the focus back a moment after the panel closes.
-            pasteTarget = Preferences.pastesFromHistory ? Paster.target() : nil
+            // Noted now, before the history panel takes the keyboard from the app the user is in.
+            pasteTarget = Paster.target()
         }
         historyPanel.toggle()
     }
 
-    /// Puts `text` on the clipboard, and pastes it if the user was typing in a text field when the history opened.
+    /// Puts `text` on the clipboard, and pastes it into the app the user was in when the history opened.
     private func useFromHistory(_ text: String) {
         NSPasteboard.general.clearContents()
         NSPasteboard.general.setString(text, forType: .string)
-        if Preferences.pastesFromHistory {
-            if let pasteTarget {
-                self.pasteTarget = nil
-                Paster.paste(into: pasteTarget)
-                return
-            }
-            // Ask once. The settings show how to allow it later.
-            if !Paster.hasPermission, !Preferences.hasAskedToPaste {
-                Preferences.hasAskedToPaste = true
-                Paster.requestPermission()
-            }
+        if let pasteTarget {
+            self.pasteTarget = nil
+            Paster.paste(into: pasteTarget)
+            return
+        }
+        // Ask once. The settings show how to allow it later.
+        if !Paster.hasPermission, !Preferences.hasAskedToPaste {
+            Preferences.hasAskedToPaste = true
+            Paster.requestPermission()
         }
         if Preferences.showCopiedNotice {
             hud.show(.copied(text))

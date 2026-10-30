@@ -18,7 +18,6 @@ final class SettingsView: NSView, NSTextFieldDelegate {
     private let historyShortcut = ShortcutField(shortcut: Preferences.historyShortcut)
     private let historyShortcutMessage = SettingsView.note()
     private let keepSwitch = SettingsView.switch()
-    private let pasteSwitch = SettingsView.switch()
     private let privateSwitch = SettingsView.switch()
     /// Warns that passwords are being saved, while they are.
     private let privateWarning = SettingsView.note()
@@ -79,7 +78,6 @@ final class SettingsView: NSView, NSTextFieldDelegate {
 
         historyShortcut.show(Preferences.historyShortcut)
         keepSwitch.state = Preferences.keepsHistory ? .on : .off
-        pasteSwitch.state = Preferences.pastesFromHistory ? .on : .off
         privateSwitch.state = Preferences.savesPrivateCopies ? .on : .off
         privateWarning.isHidden = !Preferences.savesPrivateCopies
         privacy.stringValue = Preferences.savesPrivateCopies
@@ -88,7 +86,7 @@ final class SettingsView: NSView, NSTextFieldDelegate {
                 Copies stay on this Mac. Lowering the limit deletes the older ones straight away, and copies that \
                 password managers mark as private are never saved.
                 """
-        permissionNote.isHidden = !Preferences.pastesFromHistory || Paster.hasPermission
+        permissionNote.isHidden = Paster.hasPermission
         limitKind.selectItem(at: byDays ? 1 : 0)
         limitField.integerValue = value
         limitStepper.minValue = Double(range.lowerBound)
@@ -132,15 +130,6 @@ final class SettingsView: NSView, NSTextFieldDelegate {
 
     @objc private func privateChanged() {
         Preferences.savesPrivateCopies = privateSwitch.state == .on
-        update()
-    }
-
-    @objc private func pasteChanged() {
-        Preferences.pastesFromHistory = pasteSwitch.state == .on
-        if Preferences.pastesFromHistory, !Paster.hasPermission {
-            Preferences.hasAskedToPaste = true
-            Paster.requestPermission()
-        }
         update()
     }
 
@@ -244,7 +233,7 @@ final class SettingsView: NSView, NSTextFieldDelegate {
 
     private func build(margin: CGFloat) {
         for (control, action) in [
-            (keepSwitch, #selector(keepChanged)), (pasteSwitch, #selector(pasteChanged)),
+            (keepSwitch, #selector(keepChanged)),
             (privateSwitch, #selector(privateChanged)),
             (lineBreaksSwitch, #selector(lineBreaksChanged)), (noticeSwitch, #selector(noticeChanged)),
             (launchSwitch, #selector(launchChanged)),
@@ -259,7 +248,7 @@ final class SettingsView: NSView, NSTextFieldDelegate {
         }
 
         let permissionText = Self.note()
-        permissionText.stringValue = "Pasting needs Accessibility permission."
+        permissionText.stringValue = "Pasting a copy into the app you were in needs Accessibility permission."
         let allowButton = Self.smallButton("Allow in System Settings", target: self, action: #selector(allowPastingClicked))
         permissionNote.setViews([permissionText, allowButton], in: .leading)
         permissionNote.orientation = .vertical
@@ -318,7 +307,6 @@ final class SettingsView: NSView, NSTextFieldDelegate {
         let historyGroup = Groups.box([
             row("Shortcut", historyShortcut, notes: [historyShortcutMessage]),
             row("Save history", keepSwitch),
-            row("Paste into text fields", pasteSwitch, notes: [permissionNote]),
             row("Save passwords and private copies", privateSwitch, notes: [privateWarning]),
             row("Limit by", limitKind),
             row("Keep the last", limitValue, notes: [limitWarning, defaultLimitButton]),
@@ -331,7 +319,8 @@ final class SettingsView: NSView, NSTextFieldDelegate {
             row("Show copied notice", noticeSwitch),
         ])
         let content = NSStackView(views: [
-            Groups.heading("Clipboard History"), historyGroup, privacy,
+            // Shown only while pasting is not allowed.
+            Groups.heading("Clipboard History"), permissionNote, historyGroup, privacy,
             Groups.heading("Capture Text (OCR)"), captureGroup,
             Groups.heading("General"), Groups.box([row("Open SnapText at login", launchSwitch)]),
         ])
@@ -343,6 +332,7 @@ final class SettingsView: NSView, NSTextFieldDelegate {
         content.setCustomSpacing(20, after: captureGroup)
 
         privacy.preferredMaxLayoutWidth = groupWidth - 8
+        permissionText.preferredMaxLayoutWidth = groupWidth - 8
         content.translatesAutoresizingMaskIntoConstraints = false
         addSubview(content)
         NSLayoutConstraint.activate([
@@ -351,6 +341,7 @@ final class SettingsView: NSView, NSTextFieldDelegate {
             content.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -margin),
             content.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20),
             privacy.leadingAnchor.constraint(equalTo: content.leadingAnchor, constant: 4),
+            permissionNote.leadingAnchor.constraint(equalTo: content.leadingAnchor, constant: 4),
         ])
     }
 

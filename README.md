@@ -154,7 +154,7 @@ The window does not take over: the app you were typing in stays in front, ready 
 
 | You do this                                    | What happens                                                                                                                                                                        |
 | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Click a copy**, or press <kbd>↩ Return</kbd> | If you were typing in a text field, the copy is **pasted straight into it**. If not, it goes on the clipboard, ready for <kbd>⌘</kbd> + <kbd>V</kbd>. The window closes either way. |
+| **Click a copy**, or press <kbd>↩ Return</kbd> | The copy is **pasted straight into the app you were in**, where your cursor was. It also stays on the clipboard, ready for <kbd>⌘</kbd> + <kbd>V</kbd>. The window closes. |
 | **Click the copy button** at the end of a row  | The copy goes on the clipboard and the button turns into a green tick. The window stays open, so you can keep looking.                                                              |
 | **Right-click a copy** and choose **Delete**   | That copy is removed from the history.                                                                                                                                              |
 
@@ -303,7 +303,6 @@ popup. Changes take effect at once: there is nothing to save.
 | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
 | **Shortcut**                          | The keys that open the history.                                                                                                                                                               | <kbd>⌥</kbd> + <kbd>V</kbd> |
 | **Save history**                      | Off: new copies are not saved.                                                                                                                                                                | On                          |
-| **Paste into text fields**            | On: picking a copy pastes it into the text field you were typing in. Off: it only goes on the clipboard.                                                                                      | On                          |
 | **Save passwords and private copies** | On: copies that password managers mark as private, such as passwords, are saved too, as plain text. Off for your security. See [Passwords and private copies](#passwords-and-private-copies). | Off                         |
 | **Limit by**                          | **Number of copies** or **Number of days**.                                                                                                                                                   | Number of copies            |
 | **Keep the last**                     | How many copies (up to 1,000), or how many days (up to 100).                                                                                                                                                            | 500 copies                  |
@@ -343,11 +342,11 @@ While SnapText runs, its shortcuts belong to it. With the defaults, <kbd>⌥</kb
 | Permission           | Needed for                                                 | Without it                                                           |
 | -------------------- | ---------------------------------------------------------- | -------------------------------------------------------------------- |
 | **Screen Recording** | Capture Text                                               | Captures do not work. SnapText explains how to allow it.             |
-| **Accessibility**    | Pasting a copy from the history straight into a text field | Picking a copy only puts it on the clipboard. Everything else works. |
+| **Accessibility**    | Pasting a copy from the history straight into the app you were in | Picking a copy only puts it on the clipboard. Everything else works. |
 
 Both are allowed in **System Settings → Privacy & Security**. The **Allow…** buttons in the SnapText window open
-the right page. SnapText uses Accessibility only when you pick a copy, to check that the app in front has a text
-field focused and to press <kbd>⌘</kbd> + <kbd>V</kbd> there.
+the right page. SnapText uses Accessibility only when you pick a copy, to press <kbd>⌘</kbd> + <kbd>V</kbd> in the app
+you were in.
 
 ## 8. Privacy
 
@@ -390,10 +389,10 @@ you delete them.
 <br>
 
 - Check that **Accessibility** shows **Allowed** in the SnapText window.
-- Click into the text field before you press <kbd>⌥</kbd> + <kbd>V</kbd>. SnapText pastes only when a text
-  field has the focus. Otherwise it puts the copy on the clipboard, so you can paste it with <kbd>⌘</kbd> +
-  <kbd>V</kbd>.
-- Check that **Paste into text fields** is on.
+- Click into the text field before you press <kbd>⌥</kbd> + <kbd>V</kbd>. SnapText pastes where your cursor
+  was, the same as pressing <kbd>⌘</kbd> + <kbd>V</kbd> yourself.
+- Password fields, and apps with secure keyboard entry turned on, such as Terminal, refuse keys pressed by
+  other apps. The copy is still on the clipboard: paste it with <kbd>⌘</kbd> + <kbd>V</kbd>.
 
 </details>
 
