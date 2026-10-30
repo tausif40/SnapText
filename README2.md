@@ -212,7 +212,7 @@ Closing it leaves SnapText running in the menu bar. When SnapText starts at logi
 | **Settings…** | Opens the [settings](#settings) in the SnapText window. |
 | **Open SnapText** | Opens the SnapText window. |
 | **Launch at Login** | The same as **Open SnapText at login** in the [settings](#settings). |
-| **Buy Me a Coffee** | Opens the [support page](https://tausif.info/OCRpay) in your browser. |
+| **Buy Me a Coffee** | Opens the [support page](https://byte-shelf-taupe.vercel.app/apps/snap-text) in your browser. |
 | **Quit SnapText** | Quits the app and frees its shortcuts. |
 
 ### Good to know
@@ -529,7 +529,7 @@ larger than a small fix, and run `./build.sh test` before sending a pull request
 SnapText is free. If it saves you time, you can help cover the cost of keeping it going:
 
 <p>
-  <a href="https://tausif.info/OCRpay">
+  <a href="https://byte-shelf-taupe.vercel.app/apps/snap-text">
     <img alt="Buy me a coffee" src="https://img.shields.io/badge/%E2%98%95%20%20Buy%20me%20a%20coffee-FFDD00?style=for-the-badge">
   </a>
 </p>

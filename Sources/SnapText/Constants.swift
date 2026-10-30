@@ -7,7 +7,7 @@ enum Constants {
     static let portfolio = URL(string: "https://tausif.info")!
 
     /// Where people can chip in towards the app's upkeep.
-    static let supportPage = URL(string: "https://tausif.info/OCRpay")!
+    static let supportPage = URL(string: "https://byte-shelf-taupe.vercel.app/apps/snap-text")!
 
     /// The Screen Recording list in System Settings.
     static let screenRecordingSettings =

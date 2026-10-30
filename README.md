@@ -433,7 +433,7 @@ Made by **Mohd Tausif**.
 
 - Email: [tausif6040@gmail.com](mailto:tausif6040@gmail.com)
 - Website: [tausif.info](https://tausif.info)
-- Support SnapText: [Buy me a coffee](https://tausif.info/OCRpay)
+- Support SnapText: [Buy me a coffee](https://byte-shelf-taupe.vercel.app/apps/snap-text)
 
 SnapText is free for personal and noncommercial use, under the
 [PolyForm Noncommercial License 1.0.0](LICENSE). See [License](README2.md#license) for what that allows.
