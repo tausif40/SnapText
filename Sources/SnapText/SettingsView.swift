@@ -21,6 +21,8 @@ final class SettingsView: NSView, NSTextFieldDelegate {
     private let privateSwitch = SettingsView.switch()
     /// Warns that passwords are being saved, while they are.
     private let privateWarning = SettingsView.note()
+    private let fileLocationsSwitch = SettingsView.switch()
+    private let fileLocationsNote = SettingsView.note()
     private let privacy = SettingsView.note()
     /// Explains that pasting needs Accessibility permission, while it is missing.
     private let permissionNote = NSStackView()
@@ -80,6 +82,7 @@ final class SettingsView: NSView, NSTextFieldDelegate {
         keepSwitch.state = Preferences.keepsHistory ? .on : .off
         privateSwitch.state = Preferences.savesPrivateCopies ? .on : .off
         privateWarning.isHidden = !Preferences.savesPrivateCopies
+        fileLocationsSwitch.state = Preferences.savesFileLocations ? .on : .off
         privacy.stringValue = Preferences.savesPrivateCopies
             ? "Copies stay on this Mac. Lowering the limit deletes the older ones straight away."
             : """
@@ -131,6 +134,10 @@ final class SettingsView: NSView, NSTextFieldDelegate {
     @objc private func privateChanged() {
         Preferences.savesPrivateCopies = privateSwitch.state == .on
         update()
+    }
+
+    @objc private func fileLocationsChanged() {
+        Preferences.savesFileLocations = fileLocationsSwitch.state == .on
     }
 
     @objc private func allowPastingClicked() {
@@ -234,7 +241,7 @@ final class SettingsView: NSView, NSTextFieldDelegate {
     private func build(margin: CGFloat) {
         for (control, action) in [
             (keepSwitch, #selector(keepChanged)),
-            (privateSwitch, #selector(privateChanged)),
+            (privateSwitch, #selector(privateChanged)), (fileLocationsSwitch, #selector(fileLocationsChanged)),
             (lineBreaksSwitch, #selector(lineBreaksChanged)), (noticeSwitch, #selector(noticeChanged)),
             (launchSwitch, #selector(launchChanged)),
         ] {
@@ -298,6 +305,10 @@ final class SettingsView: NSView, NSTextFieldDelegate {
         let limitValue = NSStackView(views: [limitField, limitStepper, limitUnit])
         limitValue.spacing = 4
 
+        fileLocationsNote.stringValue = """
+            Copying a file or folder, such as in Finder, saves where it is, like /Users/you/Documents/Report.pdf.
+            """
+
         privateWarning.textColor = .systemRed
         privateWarning.stringValue = """
             Passwords and other private copies are saved too, as plain text in the history file. Anyone using \
@@ -308,6 +319,7 @@ final class SettingsView: NSView, NSTextFieldDelegate {
             row("Shortcut", historyShortcut, notes: [historyShortcutMessage]),
             row("Save history", keepSwitch),
             row("Save passwords and private copies", privateSwitch, notes: [privateWarning]),
+            row("Save file and folder locations", fileLocationsSwitch, notes: [fileLocationsNote]),
             row("Limit by", limitKind),
             row("Keep the last", limitValue, notes: [limitWarning, defaultLimitButton]),
             row("Popup opacity", opacity),

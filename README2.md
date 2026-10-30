@@ -153,7 +153,9 @@ place next time, as long as that place is still on a screen.
 > Without it, SnapText only puts the copy on the clipboard. You can allow it later from the settings, or in
 > **System Settings → Privacy & Security → Accessibility**.
 
-Copying the same text again moves it to the top instead of listing it twice. Copies larger than 1 MB are not saved.
+Copying the same text again moves it to the top instead of listing it twice. Copies larger than 1 MB are not saved,
+and neither are the names of files or folders you copy, such as in Finder. Turn on **Save file and folder
+locations** to save where they are instead.
 
 ### Settings
 
@@ -168,6 +170,7 @@ settings without leaving the list. The settings are in three groups.
 | **Shortcut** | Click it, then press the combination that should open the history. <kbd>Esc</kbd> keeps the current one. |
 | **Save history** | Off: new copies are not saved. What is already saved stays until you clear it. |
 | **Save passwords and private copies** | On: copies that password managers mark as private, such as passwords, are saved too, as plain text. Off to start with, for your security. |
+| **Save file and folder locations** | On: copying a file or folder, such as in Finder, saves its location in the history, like `/Users/you/Documents/Report.pdf`, one line per item. Off to start with. |
 | **Limit by** | **Number of copies** keeps the most recent ones, 1 to 1,000, and 500 to start with. **Number of days** keeps those from the last 1 to 100 days, and 30 to start with. Either way, no more than 1,000 copies or 100 days are kept, and typing a larger number shows a red note. When the limit is not the default, a button sets it back to 500 copies or 30 days. |
 | **Popup opacity** | How solid the popup's background is, 30% to 100%. Lower it for a frosted glass look, with what is behind blurred. |
 | **Clear History** | Shows how many copies are saved, and deletes them all. Click it twice to confirm. |

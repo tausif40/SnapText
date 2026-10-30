@@ -45,6 +45,13 @@ enum Preferences {
         set { defaults.set(newValue, forKey: "savesPrivateCopies") }
     }
 
+    /// Whether copying files or folders saves their locations in the history. Off unless the user turns it on;
+    /// either way their names are not saved.
+    static var savesFileLocations: Bool {
+        get { defaults.bool(forKey: "savesFileLocations") }
+        set { defaults.set(newValue, forKey: "savesFileLocations") }
+    }
+
     /// Whether the history is limited by the age of its copies rather than by their number.
     static var limitsHistoryByDays: Bool {
         get { defaults.bool(forKey: "limitsHistoryByDays") }

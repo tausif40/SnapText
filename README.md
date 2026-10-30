@@ -207,7 +207,8 @@ limit is not the default, to set it back to 500 copies or 30 days.
 
 - **Passwords and private copies,** unless you choose to save them. See
   [Passwords and private copies](#passwords-and-private-copies).
-- **Images and files.** The history is for text only.
+- **Images, files and folders.** The history is for text only. Copying a file or folder, such as in Finder,
+  does not save its name either. Turn on **Save file and folder locations** to save where it is instead.
 - **Blank copies,** made only of spaces or empty lines.
 - **Very large copies,** over 1 MB of text, so that the history stays quick to save.
 - **Copies made while SnapText is not running.** SnapText can only notice a copy while it is open. Turn on
@@ -304,6 +305,7 @@ popup. Changes take effect at once: there is nothing to save.
 | **Shortcut**                          | The keys that open the history.                                                                                                                                                               | <kbd>⌥</kbd> + <kbd>V</kbd> |
 | **Save history**                      | Off: new copies are not saved.                                                                                                                                                                | On                          |
 | **Save passwords and private copies** | On: copies that password managers mark as private, such as passwords, are saved too, as plain text. Off for your security. See [Passwords and private copies](#passwords-and-private-copies). | Off                         |
+| **Save file and folder locations**    | On: copying a file or folder, such as in Finder, saves its location in the history, like `/Users/you/Documents/Report.pdf`, one line per item. Off: nothing is saved. The clipboard itself is left as it is either way. | Off                         |
 | **Limit by**                          | **Number of copies** or **Number of days**.                                                                                                                                                   | Number of copies            |
 | **Keep the last**                     | How many copies (up to 1,000), or how many days (up to 100).                                                                                                                                                            | 500 copies                  |
 | **Popup opacity**                     | How solid the history popup's background is, from 30% to 100%. Lower it to see what is behind, blurred like frosted glass.                                                                    | 100%                        |
